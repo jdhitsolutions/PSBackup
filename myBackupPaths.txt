@@ -1,0 +1,7 @@
+﻿#comment out paths with a # symbol at the beginning of the line
+
+C:\Scripts
+C:\users\jeff\documents
+D:\jdhit
+C:\users\jeff\dropbox
+C:\Users\Jeff\Google Drive
