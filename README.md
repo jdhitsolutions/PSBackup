@@ -8,7 +8,10 @@ You are welcome to use anything in the repository as reference material for your
 You can read more about the code in these blog posts.
 
 + [Creating a PowerShell Backup System](https://jdhitsolutions.com/blog/powershell/6905/creating-a-powershell-backup-system/)
-+ [Creating a PowerShell Backup System Part 2](https://jdhitsolutions.com/blog/powershell/6910/creating-a-powershell-backup-system-part-2/)
++ [Creating a PowerShell Backup System - Part 2](https://jdhitsolutions.com/blog/powershell/6910/creating-a-powershell-backup-system-part-2/)
 + [Creating a PowerShell Backup System – Part 3](https://jdhitsolutions.com/blog/powershell/6955/creating-a-powershell-backup-system-part-3/)
 + [Creating a PowerShell Backup System – Part 4](https://jdhitsolutions.com/blog/powershell/6962/creating-a-powershell-backup-system-part-4/)
 + [Managing My PowerShell Backup Files](https://jdhitsolutions.com/blog/powershell/7081/managing-my-powershell-backup-files/)
+
+This is essentially a read-only repository.
+If you have questions or comments, please reach out to me on Twitter [@JeffHicks](https://twitter.com/jeffhicks)
