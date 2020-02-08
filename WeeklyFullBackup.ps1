@@ -10,10 +10,10 @@ Param(
     [string]$Destination = "\\ds416\backup"
 )
 
-If (Test-Path -Path $oathList) {
+If (Test-Path -Path $pathList) {
 
     #filter out blanks and commented lines
-    $paths = Get-Content $PastList| Where-Object { $_ -match "(^[^#]\S*)" -and $_ -notmatch "^\s+$" }
+    $paths = Get-Content $PathList| Where-Object { $_ -match "(^[^#]\S*)" -and $_ -notmatch "^\s+$" }
 
     #import my custom module
     Import-Module C:\scripts\PSRAR\Dev-PSRar.psm1 -force
@@ -26,7 +26,7 @@ If (Test-Path -Path $oathList) {
                 Write-Host "[(Get-Date)] Backing up $_" -ForegroundColor yellow
                 #this is my wrapper script using WinRar to create the archive.
                 #you can use whatever tool you want in its place.
-                [void](C:\scripts\RarBackup.ps1 -Path $_ -Verbose -ErrorAction Stop)
+                &$psscriptroot\RarBackup.ps1 -Path $_ -ErrorAction Stop | Out-Null
                 $ok = $True
             }
             Catch {
@@ -61,7 +61,7 @@ If (Test-Path -Path $oathList) {
     } #foreach path
 
     #trim old backups
-    &$PSScriptRoot\mybackuptrim.ps1 -path $Destination-count 4
+    &$PSScriptRoot\mybackuptrim.ps1 -path $Destination -count 4
     #I am also backin up a smaller subset to OneDrive
     &$PSScriptRoot\mybackuptrim.ps1 -path C:\Users\Jeff\OneDrive\backup -count 3
 
