@@ -3,9 +3,9 @@
 [cmdletbinding(SupportsShouldProcess)]
 Param(
     [Parameter(Mandatory)]
-    [ValidateScript( { Test-Path $_ })]
+    [ValidateScript({Test-Path $_ })]
     [string]$Path,
-    [ValidateScript( { Test-Path $_ })]
+    [ValidateScript({Test-Path $_ })]
     #my temporary work area with plenty of disk space
     [string]$TempPath = "D:\Temp",
     [ValidateSet("FULL", "INCREMENTAL")]
@@ -13,6 +13,7 @@ Param(
 )
 
 Write-Verbose "[$(Get-Date)] Starting $($myinvocation.MyCommand)"
+Write-Host "[$(Get-Date)] Starting $($myinvocation.MyCommand) $Type for $Path" -foreground green
 if (-Not (Get-Module Dev-PSRar)) {
     Import-Module C:\scripts\PSRAR\Dev-PSRar.psm1 -force
 }
@@ -23,7 +24,7 @@ $target = Join-Path -Path $TempPath -ChildPath $name
 
 #I have hard coded my NAS backup. Would be better as a parameter with a default value.
 $nasPath = Join-Path -Path \\DS416\backup -ChildPath $name
-Write-Verbose "[$(Get-Date)] Archiving $path to $target"
+Write-Host "[$(Get-Date)] Archiving $path to $target" -foreground green
 
 if ($pscmdlet.ShouldProcess($Path)) {
     #Create the RAR archive -you can use any archiving technique you want
@@ -57,5 +58,6 @@ if ($pscmdlet.ShouldProcess($Path)) {
 }
 
 Write-Verbose "[$(Get-Date)] Ending $($myinvocation.MyCommand)"
+Write-Host "[$(Get-Date)] Ending $($myinvocation.MyCommand)" -foreground green
 
 #end of script file
