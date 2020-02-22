@@ -10,8 +10,16 @@ Param(
     [string]$Destination = "\\ds416\backup"
 )
 
-Push-Location
-Set-Location $PSScriptRoot
+<#
+I am hardcoding the path to scripts because when I
+run this as a scheduled job, there is no $PSScriptRoot or $MyInvocation
+#>
+
+$codeDir = "C:\scripts\PSBackup\"
+
+Write-Host "[$(Get-Date)] Starting Weekly Full Backup" -ForegroundColor green
+Write-Host "[$(Get-Date)] Setting location to $codeDir" -ForegroundColor yellow
+Set-Location $CodeDir
 
 If (Test-Path -Path $pathList) {
 
@@ -30,7 +38,7 @@ If (Test-Path -Path $pathList) {
                 Write-Host "[$(Get-Date)] Backing up $_" -ForegroundColor yellow
                 #this is my wrapper script using WinRar to create the archive.
                 #you can use whatever tool you want in its place.
-                [void](.\RarBackup.ps1 -Path $_ -ErrorAction Stop)
+                .\RarBackup.ps1 -Path $_ -ErrorAction Stop
                 $ok = $True
             }
             Catch {
@@ -80,4 +88,5 @@ else {
     Write-Warning "Failed to find $PathList"
 }
 
-Pop-Location
+
+Write-Host "[$(Get-Date)] Ending Weekly Full Backup" -ForegroundColor green

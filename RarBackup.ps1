@@ -28,7 +28,7 @@ Write-Host "[$(Get-Date)] Archiving $path to $target" -foreground green
 
 if ($pscmdlet.ShouldProcess($Path)) {
     #Create the RAR archive -you can use any archiving technique you want
-    Add-RARContent -path $Path -Archive $target -CompressionLevel 5 -Comment "$Type backup of $(($Path).ToUpper()) from $env:Computername"
+    Add-RARContent -path $Path -Archive $target -CompressionLevel 5 -Comment "$Type backup of $(($Path).ToUpper()) from $env:Computername" | Out-Null
 
     Write-Verbose "[$(Get-Date)] Copying $target to $nasPath"
     Try {
