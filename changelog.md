@@ -3,6 +3,7 @@
 ## March 31, 2020
 
 + Modified `WeeklyFullBackup.ps1` to allow backing up single directory.
++ Added `Add-BackupEntry.ps1` to the project.
 
 ## February 8, 2020
 
