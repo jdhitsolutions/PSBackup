@@ -1,6 +1,10 @@
 # PSBackup Change Log
 
-## February 8. 2020
+## March 31, 2020
+
++ Modified `WeeklyFullBackup.ps1` to allow backing up single directory.
+
+## February 8, 2020
 
 + Bug fixes in `WeeklyBackup.ps1` from changes I made to variable names and paths
 + Moved `RarBackup.ps1` to this repository

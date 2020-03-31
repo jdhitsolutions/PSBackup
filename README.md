@@ -3,7 +3,7 @@
 The file in the repository are a collection of PowerShell scripts and functions that I use to backup key files and folders.
 This is not a PowerShell module that you can download and install.
 The code is very specific to my needs, but I have had requests to make the code more easily available.
-You are welcome to use anything in the repository as reference material for your own projects, but everything is offered as is with no guarantees any of the code will work for you.
+You are welcome to use anything in the repository as reference material for your own projects, but everything is offered **as is with no guarantees** any of the code will work for you.
 
 You can read more about the code in these blog posts.
 
