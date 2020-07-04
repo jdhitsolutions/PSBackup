@@ -1,5 +1,11 @@
 # PSBackup Change Log
 
+## April 10, 2020
+
++ Added the `Dev-PSRar.psm1` file to the module for reference purposes.
++ Added time stamps to trace messages in `DailyIncrementalBackup.ps1`
++ Modified `DailyIncrementalBackup.ps1` to better cleanup temporary backup folder
+
 ## March 31, 2020
 
 + Modified `WeeklyFullBackup.ps1` to allow backing up single directory.
