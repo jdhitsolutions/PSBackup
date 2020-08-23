@@ -3,7 +3,7 @@
 [cmdletbinding()]
 
 Param(
-    [Parameter(Position = 0, HelpMessage = "Enter the path where the backup files are stored..")]
+    [Parameter(Position = 0, HelpMessage = "Enter the path where the backup files are stored.")]
     [ValidateNotNullOrEmpty()]
     [ValidateScript({Test-Path $_ })]
     #This is my NAS device
@@ -12,6 +12,9 @@ Param(
     [Switch]$Raw
 )
 
+$reportVer = "1.1"
+
+Write-Verbose "Starting $($myinvocation.mycommand) ver. $ReportVer"
 <#
  A regular expression pattern to match on backup file name with named captures
  to be used in adding some custom properties. My backup names are like:
@@ -21,27 +24,29 @@ Param(
 
 #>
 
-[regex]$rx = "^20\d{6}_(?<set>\w+)-(?<type>\w+)\.rar$"
+[regex]$rx = "^20\d{6}_(?<set>\w+)-(?<type>\w+)\.((rar)|(zip))$"
 
 <#
 I am doing so 'pre-filtering' on the file extension and then using the regular
 expression filter to fine tune the results
 #>
-$files = Get-ChildItem -path $Path -filter *.rar | Where-Object { $rx.IsMatch($_.name) }
+$files = Get-ChildItem $Path\*.zip,$Path\*.rar | Where-Object {$rx.IsMatch($_.name) }
+Write-Verbose "Found $($files.count) files in $Path"
 
 #add some custom properties to be used with formatted results based on named captures
 foreach ($item in $files) {
-    $setpath = $rx.matches($item.name).groups[1].value
-    $settype = $rx.matches($item.name).groups[2].value
+    $setpath = $rx.matches($item.name).groups[4].value
+    $settype = $rx.matches($item.name).groups[5].value
 
     $item | Add-Member -MemberType NoteProperty -Name SetPath -Value $setpath
     $item | Add-Member -MemberType NoteProperty -Name SetType -Value $setType
 }
 
 if ($raw) {
-    $Files
+    $Files | Sort-Object -Property LastWriteTime
 }
 else {
+    Write-Verbose "Preparing report data"
     $files | Sort-Object SetPath, SetType, LastWriteTime | Format-Table -GroupBy SetPath -Property LastWriteTime, Length, Name
     $grouped = $files | Group-Object SetPath
     $summary = foreach ($item in $grouped) {
@@ -61,3 +66,5 @@ else {
 
     ($total | Format-Table  | Out-String).TrimEnd() | Write-Host -ForegroundColor yellow
 }
+
+"$([char]0x1b)[38;5;216mReport version $reportver$([char]0x1b)[0m"

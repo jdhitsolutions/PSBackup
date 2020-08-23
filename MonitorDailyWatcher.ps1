@@ -1,5 +1,5 @@
 #requires -version 5.1
-#requires -module CimCmdlets
+#requires -module CimCmdlets,BurntToast
 
 #verify the scheduled task exists and bail out if it doesn't.
 $name = "DailyWatcher"
@@ -15,6 +15,14 @@ catch {
 #if by chance the task is not running, go ahead and start it.
 if ($task.State -ne 'running') {
     $task | Start-ScheduledTask
+    #send a toast notification
+    $params = @{
+        Text    = "Starting scheduled task $($task.taskname)"
+        Header  = $(New-BTHeader -Id 1 -Title "Daily Watcher")
+        Applogo = "c:\scripts\db.png"
+    }
+
+    New-BurntToastNotification @params
 }
 
 <#

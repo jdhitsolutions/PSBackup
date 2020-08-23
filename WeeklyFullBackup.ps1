@@ -1,4 +1,5 @@
 #requires -version 5.1
+#requires -module BurntToast
 
 [cmdletbinding(SupportsShouldProcess, DefaultParameterSetName = "list")]
 Param(
@@ -21,14 +22,15 @@ I am hardcoding the path to scripts because when I
 run this as a scheduled job, there is no $PSScriptRoot or $MyInvocation
 #>
 
-$codeDir = "C:\scripts\PSBackup\"
+$codeDir = "C:\scripts\PSBackup"
 
 Write-Host "[$(Get-Date)] Starting Weekly Full Backup" -ForegroundColor green
 Write-Host "[$(Get-Date)] Setting location to $codeDir" -ForegroundColor yellow
 Set-Location $CodeDir
 
 #import my custom module
-Import-Module C:\scripts\PSRAR\Dev-PSRar.psm1 -force
+Import-Module $codeDir\PSRar.psm1 -force
+#C:\scripts\PSRAR\Dev-PSRar.psm1 -force
 
 If ($PSCmdlet.ParameterSetName -eq "list") {
     Write-Host "[$(Get-Date)] Getting backup paths" -ForegroundColor yellow
@@ -47,7 +49,7 @@ $paths | ForEach-Object {
             Write-Host "[$(Get-Date)] Backing up $_" -ForegroundColor yellow
             #this is my wrapper script using WinRar to create the archive.
             #you can use whatever tool you want in its place.
-            .\RarBackup.ps1 -Path $_ -ErrorAction Stop
+            &"$CodeDir\RarBackup.ps1" -Path $_ -ErrorAction Stop
             $ok = $True
         }
         Catch {
@@ -84,12 +86,21 @@ if ($ok -AND ($PScmdlet.ShouldProcess("\\ds416\backup\*_$name-incremental.rar","
 #trim old backups
 Write-Host "[$(Get-Date)] Trimming backups from $Destination" -ForegroundColor yellow
 if ($OK -and ($PSCmdlet.ShouldProcess($Destination, "Trim backups"))) {
-    .\mybackuptrim.ps1 -path $Destination -count 4
+    &"$CodeDir\mybackuptrim.ps1" -path $Destination -count 4
 }
 #I am also backing up a smaller subset to OneDrive
 Write-Host "[$(Get-Date)] Trimming backups from  C:\Users\Jeff\OneDrive\backup" -ForegroundColor yellow
 if ($OK -and ($PSCmdlet.ShouldProcess("OneDrive", "Trim backups"))) {
-    .\mybackuptrim.ps1 -path C:\Users\Jeff\OneDrive\backup -count 3
+    &"$CodeDir\mybackuptrim.ps1" -path C:\Users\Jeff\OneDrive\backup -count 2
 }
 
 Write-Host "[$(Get-Date)] Ending Weekly Full Backup" -ForegroundColor green
+
+#send a toast notification
+$params = @{
+    Text    = "Backup Task Complete."
+    Header  = $(New-BTHeader -Id 1 -Title "Weekly Full Backup")
+    Applogo = "c:\scripts\db.png"
+}
+
+New-BurntToastNotification @params
