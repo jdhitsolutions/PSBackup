@@ -78,4 +78,4 @@ $params = @{
 
 New-BurntToastNotification @params
 
-Write-Host "[$(Get-Date)] Ending $($myinvocation.MyCommand)]" -for cyan
+Write-Host "[$(Get-Date)] Ending $($myinvocation.MyCommand)]" -ForegroundColor cyan

@@ -5,9 +5,11 @@ Param(
     [Parameter(Mandatory)]
     [ValidateScript({Test-Path $_ })]
     [string]$Path,
+
     [ValidateScript({Test-Path $_ })]
-    #my temporary work area with plenty of disk space
+    #my temporary work area with plenty of free disk space
     [string]$TempPath = "D:\Temp",
+
     [ValidateSet("FULL", "INCREMENTAL")]
     [string]$Type = "FULL"
 )

@@ -15,6 +15,7 @@ catch {
 #if by chance the task is not running, go ahead and start it.
 if ($task.State -ne 'running') {
     $task | Start-ScheduledTask
+    
     #send a toast notification
     $params = @{
         Text    = "Starting scheduled task $($task.taskname)"

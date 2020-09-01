@@ -8,13 +8,20 @@ Param(
     [parameter(position = 0)]
     [ValidateNotNullOrEmpty()]
     [string]$Backup = "*",
+
     [Parameter(HelpMessage = "Show raw objects, not a formatted report.")]
-    [switch]$Raw
+    [switch]$Raw,
+    
+    [Parameter(HelpMessage = "Specify the location for the backup-log.csv files.")]
+    [ValidateNotNullOrEmpty()]
+    [ValidateScript({Test-Path $_})]
+    [string]$BackupFolder = "D:\Backup"
 )
 
-Write-Verbose "Parsing CSV files from D:\backup\$backup-log.csv"
+$csv = Join-Path -Path $BackupFolder -ChildPath "$backup-log.csv"
+Write-Verbose "Parsing CSV files $csv"
 
-$f = Get-ChildItem -path "D:\backup\$backup-log.csv" | ForEach-Object {
+$f = Get-ChildItem -path $csv | ForEach-Object {
     $p = $_.fullname
     Write-Verbose "Processing $p"
     Import-Csv -Path $p | Add-Member -MemberType NoteProperty -Name Log -value $p -PassThru

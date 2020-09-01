@@ -11,7 +11,7 @@ This is an old module that hasn't been updated in years.
 #>
 
 Function Get-RARExe {
-
+    [cmdletbinding()]
     Param()
 
     #get winrar folder
@@ -33,7 +33,7 @@ Function Get-RARExe {
 #don't run this in the ISE. Redirection doesn't work.
 Function Add-RARContent {
 
-    <#
+<#
 .Synopsis
 Add files to an archive
 .Description
@@ -51,13 +51,20 @@ http://jdhitsolutions.com/blog
     [cmdletbinding(SupportsShouldProcess)]
 
     Param(
-        [Parameter(Position = 0, Mandatory,
-            HelpMessage = "Enter the path to the objects to be archived.")]
+        [Parameter(
+            Position = 0,
+            Mandatory,
+            HelpMessage = "Enter the path to the objects to be archived."
+            )]
         [ValidateNotNullOrEmpty()]
         [SupportsWildCards()]
         [alias("path")]
         [string]$Object,
-        [Parameter(Position = 1, Mandatory, HelpMessage = "Enter the path to RAR archive.")]
+        [Parameter(
+            Position = 1,
+            Mandatory,
+            HelpMessage = "Enter the path to RAR archive."
+            )]
         [ValidateNotNullOrEmpty()]
         [string]$Archive,
         [switch]$MoveFiles,
@@ -220,16 +227,18 @@ Function Show-RARContent {
     [cmdletbinding()]
 
     Param (
-        [Parameter(Position = 0, Mandatory = $True,
+        [Parameter(
+            Position = 0,
+            Mandatory,
             HelpMessage = "Enter the path to a .RAR file.",
-            ValueFromPipeline = $True)]
+            ValueFromPipeline
+            )]
         [string]$Path,
         [switch]$Detailed
     )
 
     Begin {
         Write-Verbose -Message "Starting $($MyInvocation.Mycommand)"
-
     } #begin
 
     Process {
@@ -262,16 +271,18 @@ Function Show-RARContent2 {
     [cmdletbinding()]
 
     Param (
-        [Parameter(Position = 0, Mandatory = $True,
+        [Parameter(
+            Position = 0,
+            Mandatory,
             HelpMessage = "Enter the path to a .RAR file.",
-            ValueFromPipeline = $True)]
+            ValueFromPipeline
+            )]
         [string]$Path,
         [switch]$Detailed
     )
 
     Begin {
         Write-Verbose -Message "Starting $($MyInvocation.Mycommand)"
-
     } #begin
 
     Process {
@@ -290,7 +301,7 @@ Function Show-RARContent2 {
             $sb = [scriptblock]::Create("$rar vl '$path'")
             $out = Invoke-Command -scriptblock $sb
             $total = ($out | Where-Object { $_ -match "%" } | Select-Object -Last 1).Trim()
-            $details = $out | Where-Object { $_ -match "\d{4}-\d{2}-\d{2}" }
+          #  $details = $out | Where-Object { $_ -match "\d{4}-\d{2}-\d{2}" }
 
             Write-Verbose "Parsing $Total"
             #parse details out of totals
@@ -299,7 +310,6 @@ Function Show-RARContent2 {
             [int32]$totalPacked = $totalSplit[1].trim()
             [string]$totalRatio = $totalSplit[2].trim()
             [int32]$totalFiles = $totalSplit[3].trim()
-
 
             #parse out the comment line
             #   $comment = (($out | Where-Object { $_ -match "^Comment:" }) -split "Comment: ")[1]

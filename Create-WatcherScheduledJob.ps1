@@ -70,4 +70,3 @@ Register-ScheduledJob -Name "DailyWatcher" -ScriptBlock $action -Trigger $trigge
 # manually start the task in Task Scheduler
 
 # Unregister-ScheduledJob "DailyWatcher"
-

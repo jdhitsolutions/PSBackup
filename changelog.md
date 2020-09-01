@@ -1,5 +1,12 @@
 # PSBackup ChangeLog
 
+## September 1, 2020
+
++ Modified `LogBackupEntry.ps1` to only add the file if it doesn't exist in the CSV file and to make logging optional.
++ Modified `myBackupReport.ps1` to format values as MB. Added a header to the report.
++ Modified `myBackupPending.ps1` to pass the backup folder as a parameter.
++ Code cleanup in `PSRar.psm1`.
+
 ## August 23, 2020
 
 + Added BurntToast notifications to some of my commands. This requires the [BurntToast](https://github.com/Windos/BurntToast) module.
