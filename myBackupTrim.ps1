@@ -12,7 +12,7 @@ Param(
     [Parameter(HelpMessage = "Specify a file pattern")]
     [ValidateNotNullOrEmpty()]
     [string]$Pattern = "*-FULL.rar",
-    
+
     [Parameter(HelpMessage = "Specify the number of the most recent files to keep")]
     [Validatescript( { $_ -ge 1 })]
     [int]$Count = 4
@@ -35,11 +35,16 @@ if ($files.count -gt 0) {
         but make sure there are at least $Count number of files
     #>
 
-    $grouped = $files | Group-Object -property { ([regex]"(?<=_)\w+(?=-)").match($_.BaseName).value } | Where-Object { $_.count -gt $count }
+    $grouped = $files |
+    Group-Object -property { ([regex]"(?<=_)\w+(?=-)").match($_.BaseName).value } |
+    Where-Object { $_.count -gt $count }
+
     if ($grouped) {
         foreach ($item in $grouped) {
             Write-Verbose "Trimming $($item.name)"
-            $item.group | Sort-Object -property LastWriteTime -descending | Select-Object -skip $count | Remove-Item
+            $item.group |
+            Sort-Object -property LastWriteTime -descending |
+            Select-Object -skip $count | Remove-Item
         }
     }
     else {

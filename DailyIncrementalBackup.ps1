@@ -1,5 +1,5 @@
 ﻿#requires -version 5.1
-#requires -module BurntToast
+#requires -module BurntToast,PSScriptTools
 
 #backup files from CSV change logs
 
@@ -10,12 +10,23 @@ foreach ($name in (Import-CSV D:\Backup\Scripts-log.csv -OutVariable in | Select
  $in | where {$_.name -EQ $name} | sort-object -Property ID | Select-Object -last 1
 }
 #>
-Write-Host "[$(Get-Date)] Starting $($myinvocation.MyCommand)]" -fore Cyan
+[cmdletbinding(SupportsShouldProcess)]
+Param(
+    [Parameter(HelpMessage = "Specify the location of the CSV files with incremental backup changes.")]
+    [string]$BackupPath = "D:\Backup"
+)
+#create a transcript log file
+$log = New-CustomFileName -Template "DailyIncremental_%year%month%day%hour%minute.txt"
+$logpath = Join-Path -path D:\temp -ChildPath $log
+Start-Transcript -Path $logpath
+
+Write-Host "[$(Get-Date)] Starting $($myinvocation.MyCommand)" -ForegroundColor Cyan
 
 #this is my internal archiving code. You can use whatever you want.
 Import-Module C:\scripts\PSRAR\Dev-PSRar.psm1 -force
 
-$paths = (Get-ChildItem -Path D:\Backup\*.csv).Fullname
+#get the CSV files
+$paths = (Get-ChildItem -Path "$BackupPath\*.csv").Fullname
 
 foreach ($path in $paths) {
 
@@ -49,7 +60,7 @@ foreach ($path in $paths) {
     } #foreach file
 
     #create a RAR archive or substitute your archiving code
-    $archive = Join-Path D:\BackTemp -ChildPath "$(Get-Date -Format yyyyMMdd)_$name-INCREMENTAL.rar"
+    $archive = Join-Path -path D:\BackTemp -ChildPath "$(Get-Date -Format yyyyMMdd)_$name-INCREMENTAL.rar"
     Add-RARContent -Object $relPath -Archive $archive -CompressionLevel 5 -Comment "Incremental backup $(Get-Date)"
     Write-Host "[$(Get-Date)] Moving $archive to NAS" -fore green
     Move-Item -Path $archive -Destination \\ds416\backup -Force
@@ -67,8 +78,11 @@ $newFiles = Get-Childitem -Path \\ds416\backup\*incremental.rar | Where-Object L
 $btText = @"
 Backup Task Complete
 
+Created $($newfiles.count) files.
+View log at $logpath
 "@
-$newfiles | Foreach-Object { $btText+= "$($_.name)`n"}
+
+#$newfiles | Foreach-Object { $btText+= "$($_.name)`n"}
 
 $params = @{
     Text    = $btText
@@ -79,3 +93,4 @@ $params = @{
 New-BurntToastNotification @params
 
 Write-Host "[$(Get-Date)] Ending $($myinvocation.MyCommand)]" -ForegroundColor cyan
+Stop-Transcript

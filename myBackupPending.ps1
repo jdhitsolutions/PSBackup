@@ -11,7 +11,7 @@ Param(
 
     [Parameter(HelpMessage = "Show raw objects, not a formatted report.")]
     [switch]$Raw,
-    
+
     [Parameter(HelpMessage = "Specify the location for the backup-log.csv files.")]
     [ValidateNotNullOrEmpty()]
     [ValidateScript({Test-Path $_})]
@@ -29,7 +29,7 @@ $f = Get-ChildItem -path $csv | ForEach-Object {
 
 Write-Verbose "Getting unique file names from $($f.count) files"
 $files = ($f.name | Select-Object -Unique).Foreach( {$n = $_; $f.where( { $_.name -eq $n }) |
-Sort-Object -Property { $_.date -as [datetime] } | Select-Object -last 1 })
+Sort-Object -Property {$_.date -as [datetime] } | Select-Object -last 1 })
 
 Write-Verbose "Found $($files.count) unique files"
 
@@ -40,8 +40,12 @@ if ($raw) {
 else {
     Write-Verbose "Grouping files"
     $grouped = $files | Group-Object Log
+    
     Write-Verbose "Display formatted results"
-    $files | Sort-Object -Property Log, Directory, Name | Format-Table -GroupBy log -Property Date, Name, Size, Directory
+    $files |
+    Sort-Object -Property Log, Directory, Name |
+    Format-Table -GroupBy log -Property Date, Name, Size, Directory
+
     $summary = foreach ($item in $grouped) {
         [PSCustomObject]@{
             Backup = (Get-Item $item.Name).basename.split("-")[0]

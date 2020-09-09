@@ -1,5 +1,11 @@
 # PSBackup ChangeLog
 
+## September 9, 2020
+
++ Added transcript log files to incremental and weekly backup scripts. The transcript name uses the `New-CustomFileName` command from the [PSScriptTools](https://github.com/jdhitsolutions/PSScriptTools) module.
++ Modified `MyBackupReport` to show decimal points if the backup file is smaller than 1MB in size.
++ Code reformatting to make some scripts and functions easier to read.
+
 ## September 1, 2020
 
 + Modified `LogBackupEntry.ps1` to only add the file if it doesn't exist in the CSV file and to make logging optional.

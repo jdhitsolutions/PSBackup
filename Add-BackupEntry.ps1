@@ -43,7 +43,6 @@ Source C:\scripts\PSBackup\Add-BackupEntry.ps1
             Size      = $file.length
             Path      = $file.FullName
         }
-
     } #process
     End {
         if ($add.count -gt 0) {
@@ -56,7 +55,7 @@ Source C:\scripts\PSBackup\Add-BackupEntry.ps1
 }
 
 
-    <#
+<#
     ID        : 13669)
     Date      : 11/5/2019 5:02:32 PM
     Name      : ps-regex\Module-4
@@ -64,4 +63,4 @@ Source C:\scripts\PSBackup\Add-BackupEntry.ps1
     Directory :
     Size      : 1
     Path      : C:\Scripts\ps-regex\Module-4
-   #>
+#>

@@ -12,7 +12,7 @@ Param(
     [ValidateScript( { Test-Path $_ })]
     #This is my NAS device
     [string]$Path = "\\ds416\backup",
-    
+
     [Parameter(HelpMessage = "Get backup files only with no formatted output.")]
     [Switch]$Raw
 )
@@ -55,7 +55,16 @@ else {
     Write-Host "$([char]0x1b)[1;4;38;5;216m`nMy Backup Report$([char]0x1b)[0m"
     $files | Sort-Object SetPath, SetType, LastWriteTime |
     Format-Table -GroupBy SetPath -Property @{Name = "Created"; Expression = { $_.LastWriteTime } },
-    @{Name = "SizeMB"; Expression = { Format-Value -input $_.Length -unit MB -decimal 0 } },
+    @{Name = "SizeMB"; Expression = {
+        $size = $_.length
+        if ($size -lt 1MB) {
+            $d = 4
+        }
+        else {
+            $d = 0
+        }
+        Format-Value -input $size -unit MB -decimal $d
+         } },
     Name
 $grouped = $files | Group-Object SetPath
 $summary = foreach ($item in $grouped) {

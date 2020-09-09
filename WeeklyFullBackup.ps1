@@ -1,5 +1,5 @@
 #requires -version 5.1
-#requires -module BurntToast
+#requires -module BurntToast,PSScriptTools
 
 [cmdletbinding(SupportsShouldProcess, DefaultParameterSetName = "list")]
 Param(
@@ -21,7 +21,10 @@ Param(
 I am hardcoding the path to scripts because when I
 run this as a scheduled job, there is no $PSScriptRoot or $MyInvocation
 #>
-
+#create a transcript log file
+$log = New-CustomFileName -Template "WeeklyFull_%year%month%day%hour%minute.txt"
+$logpath = Join-Path -path D:\temp -ChildPath $log
+Start-Transcript -Path $logpath
 $codeDir = "C:\scripts\PSBackup"
 
 Write-Host "[$(Get-Date)] Starting Weekly Full Backup" -ForegroundColor green
@@ -94,13 +97,13 @@ if ($OK -and ($PSCmdlet.ShouldProcess("OneDrive", "Trim backups"))) {
     &"$CodeDir\mybackuptrim.ps1" -path C:\Users\Jeff\OneDrive\backup -count 2
 }
 
-Write-Host "[$(Get-Date)] Ending Weekly Full Backup" -ForegroundColor green
-
 #send a toast notification
 $params = @{
-    Text    = "Backup Task Complete."
+    Text    = "Backup Task Complete. View log at $logpath"
     Header  = $(New-BTHeader -Id 1 -Title "Weekly Full Backup")
     Applogo = "c:\scripts\db.png"
 }
 
 New-BurntToastNotification @params
+Write-Host "[$(Get-Date)] Ending Weekly Full Backup" -ForegroundColor green
+Stop-Transcript
