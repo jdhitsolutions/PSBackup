@@ -25,6 +25,7 @@ run this as a scheduled job, there is no $PSScriptRoot or $MyInvocation
 $log = New-CustomFileName -Template "WeeklyFull_%year%month%day%hour%minute.txt"
 $logpath = Join-Path -path D:\temp -ChildPath $log
 Start-Transcript -Path $logpath
+
 $codeDir = "C:\scripts\PSBackup"
 
 Write-Host "[$(Get-Date)] Starting Weekly Full Backup" -ForegroundColor green

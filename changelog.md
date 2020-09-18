@@ -1,5 +1,10 @@
 # PSBackup ChangeLog
 
+## September 18, 2020
+
++ Added new paths to `myBackupPaths.txt`
++ Minor changes in backup scripts with `Write-Host` commands to reflect progress and aid in troubleshooting errors.
+
 ## September 9, 2020
 
 + Added transcript log files to incremental and weekly backup scripts. The transcript name uses the `New-CustomFileName` command from the [PSScriptTools](https://github.com/jdhitsolutions/PSScriptTools) module.

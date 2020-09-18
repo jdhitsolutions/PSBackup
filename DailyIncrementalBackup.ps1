@@ -20,7 +20,7 @@ $log = New-CustomFileName -Template "DailyIncremental_%year%month%day%hour%minut
 $logpath = Join-Path -path D:\temp -ChildPath $log
 Start-Transcript -Path $logpath
 
-Write-Host "[$(Get-Date)] Starting $($myinvocation.MyCommand)" -ForegroundColor Cyan
+Write-Host "[$(Get-Date)] Starting Daily Incremental" -ForegroundColor Cyan
 
 #this is my internal archiving code. You can use whatever you want.
 Import-Module C:\scripts\PSRAR\Dev-PSRar.psm1 -force
@@ -53,7 +53,7 @@ foreach ($path in $paths) {
                 (Get-Item $new.FullName -force).Attributes = $attrib
             }
         }
-        Write-Host "[(Get-Date)] Copying $($file.name) to $relpath" -ForegroundColor green
+        Write-Host "[$(Get-Date)] Copying $($file.name) to $relpath" -ForegroundColor green
         $f = Copy-Item -Path $file.Name -Destination $relpath -Force -PassThru
         #copy attributes
         $f.Attributes = (Get-Item $file.name -force).Attributes
@@ -92,5 +92,5 @@ $params = @{
 
 New-BurntToastNotification @params
 
-Write-Host "[$(Get-Date)] Ending $($myinvocation.MyCommand)]" -ForegroundColor cyan
+Write-Host "[$(Get-Date)] Ending Daily Incremental" -ForegroundColor cyan
 Stop-Transcript
