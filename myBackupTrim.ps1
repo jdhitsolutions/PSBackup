@@ -14,7 +14,7 @@ Param(
     [string]$Pattern = "*-FULL.rar",
 
     [Parameter(HelpMessage = "Specify the number of the most recent files to keep")]
-    [Validatescript( { $_ -ge 1 })]
+    [Validatescript({$_ -ge 1})]
     [int]$Count = 4
 )
 

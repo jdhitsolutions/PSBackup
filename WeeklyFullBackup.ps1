@@ -79,14 +79,6 @@ $paths | ForEach-Object {
         Remove-Item $target
     }
 
-    <#
-if ($ok -AND ($PScmdlet.ShouldProcess("\\ds416\backup\*_$name-incremental.rar","Clear Incrementals"))) {
-    Write-Host "[$(Get-Date)] Removing \\ds416\backup\*_$name-incremental.rar" -ForegroundColor yellow
-    Remove-item "\\ds416\backup\*_$name-incremental.rar"
-}
-#>
-} #foreach path
-
 #trim old backups
 Write-Host "[$(Get-Date)] Trimming backups from $Destination" -ForegroundColor yellow
 if ($OK -and ($PSCmdlet.ShouldProcess($Destination, "Trim backups"))) {
@@ -95,7 +87,7 @@ if ($OK -and ($PSCmdlet.ShouldProcess($Destination, "Trim backups"))) {
 #I am also backing up a smaller subset to OneDrive
 Write-Host "[$(Get-Date)] Trimming backups from  C:\Users\Jeff\OneDrive\backup" -ForegroundColor yellow
 if ($OK -and ($PSCmdlet.ShouldProcess("OneDrive", "Trim backups"))) {
-    &"$CodeDir\mybackuptrim.ps1" -path C:\Users\Jeff\OneDrive\backup -count 2
+    &"$CodeDir\mybackuptrim.ps1" -path $env:OneDriveConsumer\backup -count 2
 }
 
 #send a toast notification

@@ -37,7 +37,7 @@ if ($pscmdlet.ShouldProcess($Path)) {
         #copy the RAR file to the NAS for offline storage
         Copy-Item -Path $target -Destination $NASPath -ErrorAction Stop
         #copy to OneDrive
-        Copy-Item -Path $Target -Destination "c:\users\jeff\OneDrive\Backup" -ErrorAction SilentlyContinue
+        Copy-Item -Path $Target -Destination "$ENV:OneDriveConsumer\Backup" -ErrorAction SilentlyContinue
     }
     Catch {
         Write-Warning "Failed to copy $target. $($_.exception.message)"

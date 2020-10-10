@@ -20,6 +20,7 @@ Param(
 $reportVer = "1.2.0"
 
 Write-Verbose "Starting $($myinvocation.mycommand) v.$ReportVer"
+
 <#
  A regular expression pattern to match on backup file name with named captures
  to be used in adding some custom properties. My backup names are like:

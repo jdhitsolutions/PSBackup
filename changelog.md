@@ -1,5 +1,10 @@
 # PSBackup ChangeLog
 
+## October 10, 2020
+
++ Modified references to OneDrive to use `$ENV:OneDriveConsumer`.
++ Modified `MonitorDailyWatcher.ps1` to use splatting and support `-WhatIf`.
+
 ## September 18, 2020
 
 + Added new paths to `myBackupPaths.txt`
