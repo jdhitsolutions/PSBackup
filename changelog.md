@@ -1,5 +1,12 @@
 # PSBackup ChangeLog
 
+## October 17, 2020
+
++ Fixed bad OneDrive reference in `WeeklyFullBackup.ps1`.
++ Added ValidatePath() to Path parameter in `DailyIncrementalBackup.ps1`.
++ Added error handling to `DailyIncrementalBackup.ps1` and `WeeklyFullBackup.ps1` to abort if the PSRar module can't be loaded.
++ Minor code reformatting.
+
 ## October 10, 2020
 
 + Modified references to OneDrive to use `$ENV:OneDriveConsumer`.

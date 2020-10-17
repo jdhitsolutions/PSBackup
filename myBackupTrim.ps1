@@ -14,14 +14,14 @@ Param(
     [string]$Pattern = "*-FULL.rar",
 
     [Parameter(HelpMessage = "Specify the number of the most recent files to keep")]
-    [Validatescript({$_ -ge 1})]
+    [Validatescript( { $_ -ge 1 })]
     [int]$Count = 4
 )
 
 $find = Join-Path -Path $path -ChildPath $pattern
 Write-Verbose "Finding backup files from $Find"
 Try {
-    $files = Get-ChildItem -Path $find -file -ErrorAction Stop
+    $files = Get-ChildItem -Path $find -File -ErrorAction Stop
 }
 Catch {
     Throw $_
@@ -36,15 +36,15 @@ if ($files.count -gt 0) {
     #>
 
     $grouped = $files |
-    Group-Object -property { ([regex]"(?<=_)\w+(?=-)").match($_.BaseName).value } |
-    Where-Object { $_.count -gt $count }
+        Group-Object -Property { ([regex]"(?<=_)\w+(?=-)").match($_.BaseName).value } |
+        Where-Object { $_.count -gt $count }
 
     if ($grouped) {
         foreach ($item in $grouped) {
             Write-Verbose "Trimming $($item.name)"
             $item.group |
-            Sort-Object -property LastWriteTime -descending |
-            Select-Object -skip $count | Remove-Item
+                Sort-Object -Property LastWriteTime -Descending |
+                Select-Object -Skip $count | Remove-Item
         }
     }
     else {

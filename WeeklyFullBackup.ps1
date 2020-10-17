@@ -5,11 +5,11 @@
 Param(
     [Parameter(Position = 0, HelpMessage = "Path to a text file with folders to backup.", ParameterSetName = "List")]
     [ValidateNotNullOrEmpty()]
-    [ValidateScript( {Test-Path $_})]
+    [ValidateScript( { Test-Path $_ })]
     [string]$PathList = "c:\scripts\PSBackup\mybackupPaths.txt",
 
     [Parameter(Position = 0, HelpMessage = "Specify a single folder to backup", ParameterSetName = "Single")]
-    [ValidateScript( {Test-Path $_})]
+    [ValidateScript( { Test-Path $_ })]
     [string]$Path,
 
     [Parameter(Position = 0, HelpMessage = "The destination folder for the backup files")]
@@ -23,7 +23,7 @@ run this as a scheduled job, there is no $PSScriptRoot or $MyInvocation
 #>
 #create a transcript log file
 $log = New-CustomFileName -Template "WeeklyFull_%year%month%day%hour%minute.txt"
-$logpath = Join-Path -path D:\temp -ChildPath $log
+$logpath = Join-Path -Path D:\temp -ChildPath $log
 Start-Transcript -Path $logpath
 
 $codeDir = "C:\scripts\PSBackup"
@@ -33,8 +33,16 @@ Write-Host "[$(Get-Date)] Setting location to $codeDir" -ForegroundColor yellow
 Set-Location $CodeDir
 
 #import my custom module
-Import-Module $codeDir\PSRar.psm1 -force
-#C:\scripts\PSRAR\Dev-PSRar.psm1 -force
+Try {
+    #Import-Module C:\scripts\PSRAR\Dev-PSRar.psm1 -Force -ErrorAction Stop
+    Import-Module $codeDir\PSRar.psm1 -Force -ErrorAction Stop
+    #C:\scripts\PSRAR\Dev-PSRar.psm1 -force
+}
+Catch {
+    Write-Warning "Failed to import PSRar module at $codeDir\PSRar.psm1."
+    #bail out if the module fails to load
+    return
+}
 
 If ($PSCmdlet.ParameterSetName -eq "list") {
     Write-Host "[$(Get-Date)] Getting backup paths" -ForegroundColor yellow
@@ -60,7 +68,7 @@ $paths | ForEach-Object {
             $ok = $False
             Write-Warning $_.exception.message
         }
-    }
+    } #what if
 
     #clear corresponding incremental log files
     $name = ((Split-Path $_ -Leaf).replace(' ', ''))
@@ -69,26 +77,28 @@ $paths | ForEach-Object {
 
     if ($OK -AND (Test-Path $log) -AND ($pscmdlet.ShouldProcess($log, "Clear Log"))) {
         Write-Host "[$(Get-Date)] Removing $log" -ForegroundColor yellow
-        Remove-Item -path $log
-    }
+        Remove-Item -Path $log
+    } #whatif
 
     #clear incrementals
     $target = Join-Path -Path $Destination -ChildPath "*_$name-incremental.rar"
     if ($ok -AND ($PScmdlet.ShouldProcess($target, "Clear Incrementals"))) {
         Write-Host "[$(Get-Date)] Removing $Target" -ForegroundColor yellow
         Remove-Item $target
-    }
+    } #whatif
 
-#trim old backups
-Write-Host "[$(Get-Date)] Trimming backups from $Destination" -ForegroundColor yellow
-if ($OK -and ($PSCmdlet.ShouldProcess($Destination, "Trim backups"))) {
-    &"$CodeDir\mybackuptrim.ps1" -path $Destination -count 4
-}
-#I am also backing up a smaller subset to OneDrive
-Write-Host "[$(Get-Date)] Trimming backups from  C:\Users\Jeff\OneDrive\backup" -ForegroundColor yellow
-if ($OK -and ($PSCmdlet.ShouldProcess("OneDrive", "Trim backups"))) {
-    &"$CodeDir\mybackuptrim.ps1" -path $env:OneDriveConsumer\backup -count 2
-}
+    #trim old backups
+    Write-Host "[$(Get-Date)] Trimming backups from $Destination" -ForegroundColor yellow
+    if ($OK -and ($PSCmdlet.ShouldProcess($Destination, "Trim backups"))) {
+        &"$CodeDir\mybackuptrim.ps1" -path $Destination -count 4
+    } #whatif
+
+    #I am also backing up a smaller subset to OneDrive
+    Write-Host "[$(Get-Date)] Trimming backups from $env:OneDriveConsumer\backup" -ForegroundColor yellow
+    if ($OK -and ($PSCmdlet.ShouldProcess("OneDrive", "Trim backups"))) {
+        &"$CodeDir\mybackuptrim.ps1" -path $env:OneDriveConsumer\backup -count 2
+    }
+} #foreach path
 
 #send a toast notification
 $params = @{
@@ -99,4 +109,5 @@ $params = @{
 
 New-BurntToastNotification @params
 Write-Host "[$(Get-Date)] Ending Weekly Full Backup" -ForegroundColor green
+
 Stop-Transcript
