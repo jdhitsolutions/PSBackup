@@ -24,9 +24,10 @@ Write-Verbose "Parsing CSV files $csv"
 $f = Get-ChildItem -path $csv | ForEach-Object {
     $p = $_.fullname
     Write-Verbose "Processing $p"
-    Import-Csv -Path $p | Add-Member -MemberType NoteProperty -Name Log -value $p -PassThru
-} | Where-Object { ([int32]$_.Size -gt 0) -AND ($_.IsFolder -eq 'False') }
+    Import-Csv -Path $p -OutVariable in | Add-Member -MemberType NoteProperty -Name Log -value $p -PassThru
+} | Where-Object { $_.IsFolder -eq 'False' }
 
+Write-Verbose "Found $($in.count) files to import"
 Write-Verbose "Getting unique file names from $($f.count) files"
 $files = ($f.name | Select-Object -Unique).Foreach( {$n = $_; $f.where( { $_.name -eq $n }) |
 Sort-Object -Property {$_.date -as [datetime] } | Select-Object -last 1 })
@@ -40,7 +41,7 @@ if ($raw) {
 else {
     Write-Verbose "Grouping files"
     $grouped = $files | Group-Object Log
-    
+
     Write-Verbose "Display formatted results"
     $files |
     Sort-Object -Property Log, Directory, Name |

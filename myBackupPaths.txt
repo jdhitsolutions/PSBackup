@@ -1,12 +1,13 @@
 ﻿#comment out paths with a # symbol at the beginning of the line
+#you can't use $ENV variables or shell shortcuts like ~
 
-C:\Scripts
 C:\users\jeff\documents
-D:\jdhit
-C:\users\jeff\dropbox
 C:\Users\Jeff\Google Drive
+C:\users\jeff\dropbox
+C:\Scripts
 C:\Presentations
 C:\Training
-C:\Users\Jeff\OneDrive\PSProfiles
+D:\OneDrive\PSProfiles
+D:\jdhit
 
 #D:\ToolmakingBook

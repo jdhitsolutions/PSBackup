@@ -13,7 +13,7 @@ Param(
 )
 
 #log activity. Comment out the line to disable logging
-# $logfile = "D:\temp\watcherlog.txt"
+$logfile = "D:\temp\watcherlog.txt"
 
 #uncomment for debugging and testing
 # this will create a serialized version of each fired event
@@ -49,5 +49,6 @@ if (Test-Path $event.SourceEventArgs.fullpath) {
   } #if not a container and not a temp file
 
 } #if test-path
+
  if ($logfile) {"$(Get-Date) Ending LogBackupEntry.ps1" | Out-File -FilePath $logfile -append}
 #end of script

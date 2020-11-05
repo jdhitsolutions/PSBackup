@@ -1,5 +1,11 @@
 # PSBackup ChangeLog
 
+## November 5, 2020
+
++ Modified `myBackupPending.ps1` to include files with zero size as these might be new files that haven't been updated yet.
++ Updated `myBackupPaths.txt` to use full filesystem paths.
++ Added `UpdateBackupPending.ps1` to update pending CSV files. This will remove deleted files and update file sizes.
+
 ## October 17, 2020
 
 + Fixed bad OneDrive reference in `WeeklyFullBackup.ps1`.
