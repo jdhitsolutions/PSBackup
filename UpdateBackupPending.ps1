@@ -21,8 +21,8 @@ Process {
         $csv.AddRange($(Import-Csv -Path $item -OutVariable in))
 
         Write-Verbose "Processing $($csv.count) items"
-        $updated = $csv.where( { Test-Path $_.Path }).foreach( {
-                $now = Get-Item $_.path
+        $updated = $csv.where({Test-Path $_.Path }).foreach( {
+                $now = Get-Item $_.path -force
                 if ($now.length -ne $_.Size) {
                     Write-Verbose "Updating filesize for $($_.path) from $($_.size) to $($now.length)"
                     $_.size = $now.length
@@ -30,7 +30,7 @@ Process {
                 $_
             })
 
-        $remove = $in.where( { $updated.path -notcontains $_.path }).path
+        $remove = $in.where({ $updated.path -notcontains $_.path }).path
         if ($remove.count -gt 0) {
             Write-Verbose "Removing these files"
             $remove | Write-Verbose
