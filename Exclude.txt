@@ -1,0 +1,8 @@
+C:\Users\Jeff\Documents\PowerShell\Help\*
+C:\users\jeff\documents\windowsPowershell\modules\*
+C:\scripts\testing\*
+c:\users\jeff\dropbox\dropbox.ini
+c:\users\jeff\dropbox\mycomics\*
+C:\work\demo\*
+C:\work\data\exclude\*
+c:\work\*.psd1

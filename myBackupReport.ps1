@@ -4,22 +4,30 @@
 #myBackupReport.ps1
 
 # this script uses Format-Value from the PSScriptTools module.
-[cmdletbinding()]
+[cmdletbinding(DefaultParameterSetName="default")]
 
 Param(
-    [Parameter(Position = 0, HelpMessage = "Enter the path where the backup files are stored.")]
+    [Parameter(Position = 0, HelpMessage = "Enter the path where the backup files are stored.",ParameterSetName="default")]
+    [Parameter(ParameterSetName = "raw")]
+    [Parameter(ParameterSetName = "sumOnly")]
     [ValidateNotNullOrEmpty()]
-    [ValidateScript( { Test-Path $_ })]
+    [ValidateScript({Test-Path $_ })]
     #This is my NAS device
     [string]$Path = "\\ds416\backup",
 
-    [Parameter(HelpMessage = "Get backup files only with no formatted output.")]
+    [Parameter(HelpMessage = "Only display the summary",ParameterSetName = "sumOnly")]
+    [switch]$SummaryOnly,
+
+    [Parameter(HelpMessage = "Get backup files only with no formatted summary.",ParameterSetName = "raw")]
     [Switch]$Raw
 )
 
-$reportVer = "1.2.0"
+$reportVer = "1.2.1"
 
+#convert path to a full filesystem path
+$Path = Convert-Path $path
 Write-Verbose "Starting $($myinvocation.mycommand) v.$ReportVer"
+Write-Verbose "Using parameter set $($pscmdlet.ParameterSetName)"
 
 <#
  A regular expression pattern to match on backup file name with named captures
@@ -53,7 +61,8 @@ if ($raw) {
 }
 else {
     Write-Verbose "Preparing report data"
-    Write-Host "$([char]0x1b)[1;4;38;5;216m`nMy Backup Report$([char]0x1b)[0m"
+    Write-Host "$([char]0x1b)[1;4;38;5;216m`nMy Backup Report - $Path`n$([char]0x1b)[0m"
+    if ($pscmdlet.ParameterSetName -eq 'default') {
     $files | Sort-Object SetPath, SetType, LastWriteTime |
     Format-Table -GroupBy SetPath -Property @{Name = "Created"; Expression = { $_.LastWriteTime } },
     @{Name = "SizeMB"; Expression = {
@@ -67,6 +76,7 @@ else {
         Format-Value -input $size -unit MB -decimal $d
          } },
     Name
+        }
 $grouped = $files | Group-Object SetPath
 $summary = foreach ($item in $grouped) {
     [pscustomobject]@{
@@ -83,9 +93,13 @@ $total = [PSCustomObject]@{
     #[math]::round(($summary.size | Measure-Object -sum).sum/1MB,4)
 }
 Write-Host "Backup Summary $((Get-Date).ToShortDateString())" -ForegroundColor yellow
+Write-Host "Path: $Path" -ForegroundColor Yellow
+
 ($summary | Sort-Object Size -Descending | Format-Table | Out-String).TrimEnd() | Write-Host -ForegroundColor yellow
 
 ($total | Format-Table | Out-String).TrimEnd() | Write-Host -ForegroundColor yellow
 }
 
-Write-Host "$([char]0x1b)[38;5;216m`nReport version $reportver$([char]0x1b)[0m"
+if ($pscmdlet.ParameterSetName -ne 'raw') {
+    Write-Host "$([char]0x1b)[38;5;216m`nReport version $reportver$([char]0x1b)[0m"
+}

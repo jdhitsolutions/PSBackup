@@ -2,6 +2,7 @@
 #requires -module BurntToast,PSScriptTools
 
 #backup files from CSV change logs
+#the CSV files should already follow path exclusions in Exclude.txt
 
 <#
 option to get last version of each file as an alternative to using Group-Object

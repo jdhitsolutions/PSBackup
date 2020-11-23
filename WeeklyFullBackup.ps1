@@ -36,7 +36,6 @@ Set-Location $CodeDir
 Try {
     #Import-Module C:\scripts\PSRAR\Dev-PSRar.psm1 -Force -ErrorAction Stop
     Import-Module $codeDir\PSRar.psm1 -Force -ErrorAction Stop
-    #C:\scripts\PSRAR\Dev-PSRar.psm1 -force
 }
 Catch {
     Write-Warning "Failed to import PSRar module at $codeDir\PSRar.psm1."

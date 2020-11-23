@@ -1,5 +1,14 @@
 # PSBackup ChangeLog
 
+## November 19, 2020
+
++ Added `Archive-Oldest.ps1` to rename the oldest file per backup set in a location as an Archive. The goal is to keep at least one archive for a longer period. You might run this quarterly or every 6 months.
++ Modified `LogBackupEntry.ps1` to archive the log file when it is 10MB in size and reset the file.
++ Adding an exclusion file to skip certain paths.
++ Modified `RarBackup.ps1` to set the location via a parameter and not be hardcoded.
++ Modified `myBackupReport.ps1` to include the path in the report header.
++ Modified `myBackupReport.ps1` to include a `-SummaryOnly` parameter. This added parameter sets to the script.
+
 ## November 5, 2020
 
 + Modified `myBackupPending.ps1` to include files with zero size as these might be new files that haven't been updated yet.
