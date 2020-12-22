@@ -1,5 +1,9 @@
 # PSBackup ChangeLog
 
+## December 22, 2020
+
++ Modified `UpdateBackupPending.ps1` to handle situations where CSV only has 1 item.
+
 ## November 19, 2020
 
 + Added `Archive-Oldest.ps1` to rename the oldest file per backup set in a location as an Archive. The goal is to keep at least one archive for a longer period. You might run this quarterly or every 6 months.

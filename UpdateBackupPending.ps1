@@ -18,7 +18,15 @@ Process {
     Foreach ($item in $Path) {
         Write-Verbose "Importing data from $item"
         $csv = [System.Collections.generic.list[object]]::new()
-        $csv.AddRange($(Import-Csv -Path $item -OutVariable in))
+        if ($item.count -eq 0) {
+            Return "No items found."
+        }
+        elseif($item.count -eq 1) {
+            $csv.Add($(Import-Csv -Path $item -OutVariable in))
+        }
+        else {
+            $csv.AddRange($(Import-Csv -Path $item -OutVariable in))
+        }
 
         Write-Verbose "Processing $($csv.count) items"
         $updated = $csv.where({Test-Path $_.Path }).foreach( {

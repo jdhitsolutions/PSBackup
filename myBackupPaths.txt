@@ -5,8 +5,8 @@ C:\users\jeff\documents
 C:\Users\Jeff\Google Drive
 C:\users\jeff\dropbox
 C:\Scripts
-C:\Presentations
-C:\Training
+#C:\Presentations
+#C:\Training
 D:\OneDrive\PSProfiles
 D:\jdhit
 #D:\ToolmakingBook
