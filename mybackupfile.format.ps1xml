@@ -1,0 +1,153 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Format type data generated 01/19/2021 14:36:07 by PROSPERO\Jeff
+
+This file was created using the New-PSFormatXML command that is part
+of the PSScriptTools module.
+https://github.com/jdhitsolutions/PSScriptTools
+-->
+<Configuration>
+  <ViewDefinitions>
+    <View>
+      <!--Created 01/19/2021 14:36:07 by PROSPERO\Jeff-->
+      <Name>default</Name>
+      <ViewSelectedBy>
+        <TypeName>myBackupFile</TypeName>
+      </ViewSelectedBy>
+      <GroupBy>
+        <!--
+            You can also use a scriptblock to define a custom property name.
+            You must have a Label tag.
+            <ScriptBlock>$_.machinename.toUpper()</ScriptBlock>
+            <Label>Computername</Label>
+
+            Use <Label> to set the displayed value.
+-->
+        <PropertyName>BackupSet</PropertyName>
+        <Label>BackupSet</Label>
+      </GroupBy>
+      <TableControl>
+        <!--Delete the AutoSize node if you want to use the defined widths.
+        <AutoSize />-->
+        <TableHeaders>
+          <TableColumnHeader>
+            <Label>Created</Label>
+            <Width>25</Width>
+            <Alignment>left</Alignment>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Size</Label>
+            <Width>8</Width>
+            <Alignment>right</Alignment>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Name</Label>
+            <Width>40</Width>
+            <Alignment>left</Alignment>
+          </TableColumnHeader>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <TableColumnItems>
+              <!--
+            By default the entries use property names, but you can replace them with scriptblocks.
+            <ScriptBlock>$_.foo /1mb -as [int]</ScriptBlock>
+-->
+              <TableColumnItem>
+                <PropertyName>Created</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <ScriptBlock>
+                if ($_.Size -lt 1MB) {
+                  [math]::round($_.Length/1MB,4)
+                }
+                else {
+                  $_.Size/1MB -as [int]
+                }
+                </ScriptBlock>
+              </TableColumnItem>
+              <TableColumnItem>
+                <ScriptBlock>
+                  <!-- highlight incremental backups-->
+                  if ($_.settype -eq 'Incremental') {
+                   "$([char]0x1b)[38;5;191m$($_.name)$([char]0x1b)[0m"
+                  }
+                  else {
+                    $_.Name
+                  }
+                </ScriptBlock>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
+    <View>
+      <!--Created 01/19/2021 15:32:53 by PROSPERO\Jeff-->
+      <Name>raw</Name>
+      <ViewSelectedBy>
+        <TypeName>myBackupFile</TypeName>
+      </ViewSelectedBy>
+      <GroupBy>
+        <!--
+            You can also use a scriptblock to define a custom property name.
+            You must have a Label tag.
+            <ScriptBlock>$_.machinename.toUpper()</ScriptBlock>
+            <Label>Computername</Label>
+
+            Use <Label> to set the displayed value.
+-->
+        <PropertyName>Directory</PropertyName>
+        <Label>Directory</Label>
+      </GroupBy>
+      <TableControl>
+        <!--Delete the AutoSize node if you want to use the defined widths.
+        <AutoSize />-->
+        <TableHeaders>
+          <TableColumnHeader>
+            <Label>Created</Label>
+            <Width>22</Width>
+            <Alignment>left</Alignment>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Size</Label>
+            <Width>15</Width>
+            <Alignment>right</Alignment>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Name</Label>
+            <Width>38</Width>
+            <Alignment>left</Alignment>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>BackupSet</Label>
+            <Width>18</Width>
+            <Alignment>left</Alignment>
+          </TableColumnHeader>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <TableColumnItems>
+              <!--
+            By default the entries use property names, but you can replace them with scriptblocks.
+            <ScriptBlock>$_.foo /1mb -as [int]</ScriptBlock>
+-->
+              <TableColumnItem>
+                <PropertyName>Created</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>Size</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>Name</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>BackupSet</PropertyName>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
+  </ViewDefinitions>
+</Configuration>

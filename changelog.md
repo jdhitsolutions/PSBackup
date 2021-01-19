@@ -1,5 +1,21 @@
 # PSBackup ChangeLog
 
+## January 19, 2021
+
++ Fixed incorrect property name in `MyBackupReport.ps1`.
++ Added a `Last` parameter to the `Raw` parameter set in `MyBackupReport.ps1`.
++ Created `Get-MyBackupFile` function and `mybackupfile.format.ps1xml` format file. The function has an alias of `gbf`.
++ Updated `LICENSE`.
+
+## January 12, 2021
+
++ Fixed another bug in `UpdateBackupPending.ps1` to handle situations where CSV only has 1 item.
+
+## December 29, 2020
+
++ Added more explicit WhatIf code to `DailyIncrementalBackup.ps1`.
++ Fixed bug in `DailyIncrementalBackup.ps1` that wasn't archiving the proper path.
+
 ## December 22, 2020
 
 + Modified `UpdateBackupPending.ps1` to handle situations where CSV only has 1 item.

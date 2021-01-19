@@ -4,14 +4,14 @@ Function Add-BackupEntry {
 
 <# PSFunctionInfo
 
-Version 1.1.0
+Version 1.2.0
 Author Jeffery Hicks
 CompanyName JDH IT Solutions, Inc.
 Copyright (c) 2020 JDH IT Solutions, Inc.
 Description Add an entry to one of my backup CSV files
 Guid a6c22223-4f16-4ad2-a3ff-b27e374ce52a
 Tags profile,backup
-LastUpdate 03/31/2020 12:30:08
+LastUpdate 12/29/2020 11:23:08
 Source C:\scripts\PSBackup\Add-BackupEntry.ps1
 
 #>
@@ -19,10 +19,12 @@ Source C:\scripts\PSBackup\Add-BackupEntry.ps1
     Param(
         [Parameter(Position = 0, Mandatory, ValueFromPipeline)]
         [string]$Path,
-        [Parameter(Mandatory)]
+
+        [Parameter(Position = 1,Mandatory)]
         #I'm using a dynamic argument completer instead of the old validate set
         #[ValidateSet("Scripts","Dropbox","Documents","GoogleDrive","jdhit")]
-        [Argumentcompleter({(Get-Childitem D:\backup\*.csv).name.foreach( {($_ -split "-")[0]})})]
+        [ArgumentCompleter({(Get-Childitem D:\backup\*.csv).name.foreach({($_ -split "-")[0]})})]
+        [alias("set")]
         [string]$BackupSet
     )
 
@@ -55,7 +57,6 @@ Source C:\scripts\PSBackup\Add-BackupEntry.ps1
         Write-Verbose "[END    ] Ending: $($MyInvocation.Mycommand)"
     } #end
 }
-
 
 <#
     ID        : 13669)

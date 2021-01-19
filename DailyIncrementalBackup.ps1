@@ -5,7 +5,7 @@
 #the CSV files should already follow path exclusions in Exclude.txt
 
 <#
-option to get last version of each file as an alternative to using Group-Object
+this is another way to get last version of each file instead of using Group-Object
 
 foreach ($name in (Import-CSV D:\Backup\Scripts-log.csv -OutVariable in | Select-Object Name -Unique).name) {
  $in | where {$_.name -EQ $name} | sort-object -Property ID | Select-Object -last 1
@@ -47,10 +47,12 @@ foreach ($path in $paths) {
         Where-Object { ($_.name -notmatch "~|\.tmp") -AND ($_.size -gt 0) -AND ($_.IsFolder -eq 'False') -AND (Test-Path $_.path) } |
         Select-Object -Property path, size, directory, isfolder, ID | Group-Object -Property Path
 
+    $tmpParent = Join-Path -path D:\backtemp -ChildPath $name
+
     foreach ($file in $files) {
         $parentFolder = $file.group[0].directory
         #Create a temporary folder for backing up the day's files
-        $relPath = Join-Path -Path "D:\backtemp\$Name" -ChildPath $parentFolder.Substring(3)
+        $relPath = Join-Path -Path $tmpParent -ChildPath $parentFolder.Substring(3)
 
         if (-Not (Test-Path -Path $relpath)) {
             Write-Host "[$(Get-Date)] Creating $relpath" -ForegroundColor cyan
@@ -68,17 +70,31 @@ foreach ($path in $paths) {
         Write-Host "[$(Get-Date)] Copying $($file.name) to $relpath" -ForegroundColor green
         $f = Copy-Item -Path $file.Name -Destination $relpath -Force -PassThru
         #copy attributes
-        $f.Attributes = (Get-Item $file.name -Force).Attributes
+        if ($pscmdlet.ShouldProcess($f.name,"Copy Attributes")) {
+            $f.Attributes = (Get-Item $file.name -Force).Attributes
+        }
     } #foreach file
 
     #create a RAR archive or substitute your archiving code
     $archive = Join-Path -Path D:\BackTemp -ChildPath "$(Get-Date -Format yyyyMMdd)_$name-INCREMENTAL.rar"
-    Add-RARContent -Object $relPath -Archive $archive -CompressionLevel 5 -Comment "Incremental backup $(Get-Date)"
+    #get some stats about the data to be archived
+    $stats = Get-ChildItem -path $tmpParent -file -Recurse | Measure-Object -Property length -sum
+    Write-Host "[$(Get-Date)] Creating $archive from $tmpParent" -fore green
+    Write-Host "[$(Get-Date)] $($stats.count) files totally $($stats.sum)" -fore green
+
+    #uncommment for debugging
+    #Pause
+
+    Add-RARContent -Object $tmpParent -Archive $archive -CompressionLevel 5 -Comment "Incremental backup $(Get-Date)" -verbose
     Write-Host "[$(Get-Date)] Moving $archive to NAS" -fore green
-    Move-Item -Path $archive -Destination \\ds416\backup -Force
+    if ($pscmdlet.ShouldProcess($archive,"Move file")) {
+        Move-Item -Path $archive -Destination \\ds416\backup -Force
+    }
 
     Write-Host "[$(Get-Date)] Removing $path" -fore yellow
-    Remove-Item $path
+    if ($pscmdlet.ShouldProcess($path,"Remove file")) {
+        Remove-Item $path
+    }
 
 } #foreach path
 
@@ -102,7 +118,9 @@ $params = @{
     Applogo = "c:\scripts\db.png"
 }
 
-New-BurntToastNotification @params
+if ($pscmdlet.shouldProcess($logpath,"Send Toast Notification")) {
+    New-BurntToastNotification @params
+}
 
 Write-Host "[$(Get-Date)] Ending Daily Incremental" -ForegroundColor cyan
 Stop-Transcript

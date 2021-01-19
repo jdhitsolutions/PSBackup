@@ -2,7 +2,6 @@
 #requires -module PSScriptTools
 
 #myBackupReport.ps1
-
 # this script uses Format-Value from the PSScriptTools module.
 [cmdletbinding(DefaultParameterSetName="default")]
 
@@ -19,10 +18,12 @@ Param(
     [switch]$SummaryOnly,
 
     [Parameter(HelpMessage = "Get backup files only with no formatted summary.",ParameterSetName = "raw")]
-    [Switch]$Raw
+    [Switch]$Raw,
+    [Parameter(HelpMessage = "Get the last X number of raw files", ParameterSetName = "raw")]
+    [int]$Last
 )
 
-$reportVer = "1.2.1"
+$reportVer = "1.3.0"
 
 #convert path to a full filesystem path
 $Path = Convert-Path $path
@@ -45,6 +46,13 @@ I am doing so 'pre-filtering' on the file extension and then using the regular
 expression filter to fine tune the results
 #>
 $files = Get-ChildItem $Path\*.zip, $Path\*.rar | Where-Object { $rx.IsMatch($_.name) }
+
+#Bail out if no file
+if ($files.count -eq 0) {
+    Write-Warning "No backup files found in $Path"
+    return
+}
+
 Write-Verbose "Found $($files.count) files in $Path"
 
 foreach ($item in $files) {
@@ -56,7 +64,12 @@ foreach ($item in $files) {
     $item | Add-Member -MemberType NoteProperty -Name SetType -Value $setType
 }
 
-if ($raw) {
+if ($raw -AND $last) {
+    Write-Verbose "Getting last $last raw files"
+    $Files | Sort-Object -Property LastWriteTime | Select-object -last $last
+}
+elseif ($raw) {
+     Write-Verbose "Getting all raw files"
     $Files | Sort-Object -Property LastWriteTime
 }
 else {
@@ -64,34 +77,33 @@ else {
     Write-Host "$([char]0x1b)[1;4;38;5;216m`nMy Backup Report - $Path`n$([char]0x1b)[0m"
     if ($pscmdlet.ParameterSetName -eq 'default') {
     $files | Sort-Object SetPath, SetType, LastWriteTime |
-    Format-Table -GroupBy SetPath -Property @{Name = "Created"; Expression = { $_.LastWriteTime } },
-    @{Name = "SizeMB"; Expression = {
-        $size = $_.length
-        if ($size -lt 1MB) {
-            $d = 4
+        Format-Table -GroupBy SetPath -Property @{Name = "Created"; Expression = { $_.LastWriteTime } },
+        @{Name = "SizeMB"; Expression = {
+            $size = $_.length
+            if ($size -lt 1MB) {
+                $d = 4
+            }
+            else {
+                $d = 0
+            }
+            Format-Value -input $size -unit MB -decimal $d
+            } },
+        Name
         }
-        else {
-            $d = 0
-        }
-        Format-Value -input $size -unit MB -decimal $d
-         } },
-    Name
-        }
-$grouped = $files | Group-Object SetPath
+$grouped = $files | Group-Object -property SetPath
 $summary = foreach ($item in $grouped) {
     [pscustomobject]@{
         BackupSet = $item.name
         Files     = $item.Count
-        SizeMB    = ($item.group | Measure-Object -Property size -sum -outvariable m).sum | Format-Value -unit MB -Decimal 2
+        SizeMB    = ($item.group | Measure-Object -Property Length -sum -outvariable m).sum | Format-Value -unit MB -Decimal 2
     }
 }
 
 $total = [PSCustomObject]@{
     TotalFiles  = ($summary.files | Measure-Object -sum).sum
-    #($grouped | Measure-Object -property count -sum).sum
     TotalSizeMB = ($summary.sizeMB | Measure-Object -sum).sum
-    #[math]::round(($summary.size | Measure-Object -sum).sum/1MB,4)
 }
+
 Write-Host "Backup Summary $((Get-Date).ToShortDateString())" -ForegroundColor yellow
 Write-Host "Path: $Path" -ForegroundColor Yellow
 

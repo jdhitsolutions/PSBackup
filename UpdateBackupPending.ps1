@@ -30,11 +30,16 @@ Process {
         }
 
         Write-Verbose "Processing $($csv.count) items"
-        $updated = $csv.where( { Test-Path $_.Path }).foreach( {
+        $updated = $csv.where({ Test-Path $_.Path }).foreach({
                 $now = Get-Item $_.path -Force
                 if ($now.length -ne $_.Size) {
-                    Write-Verbose "Updating filesize for $($_.path) from $($_.size) to $($now.length)"
-                    $_.size = $now.length
+                    Write-Verbose "Updating file size for $($_.path) from $($_.size) to $($now.length)"
+                    if ($in.count -eq 1) {
+                        $_[0].size = $now.length
+                    }
+                    else {
+                        $_.size = $now.length
+                    }
                 }
                 $_
             })
