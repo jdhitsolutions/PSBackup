@@ -23,7 +23,9 @@ https://github.com/jdhitsolutions/PSScriptTools
 
             Use <Label> to set the displayed value.
 -->
-        <PropertyName>BackupSet</PropertyName>
+        <ScriptBlock>
+        "$([char]0x1b)[38;5;217m{0}{1}$([char]0x1b)[0m" -f ($($_.BackupSet)[0].tostring().toupper()),$($_.Backupset).Substring(1)
+        </ScriptBlock>
         <Label>BackupSet</Label>
       </GroupBy>
       <TableControl>
@@ -36,8 +38,8 @@ https://github.com/jdhitsolutions/PSScriptTools
             <Alignment>left</Alignment>
           </TableColumnHeader>
           <TableColumnHeader>
-            <Label>Size</Label>
-            <Width>8</Width>
+            <Label>SizeMB</Label>
+            <Width>10</Width>
             <Alignment>right</Alignment>
           </TableColumnHeader>
           <TableColumnHeader>

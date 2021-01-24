@@ -1,5 +1,11 @@
 # PSBackup ChangeLog
 
+## January 24, 2021
+
++ Modified `Add-BackupEntry` to define an alias `abe`.
++ Modified `BackupSet` parameter in `Add-BackupEntry` to be position 0 since I am mostly piping files to the command.
++ Updated `mybackupfile.format.ps1xml` to display set grouping with an ANSI color sequence.
+
 ## January 19, 2021
 
 + Fixed incorrect property name in `MyBackupReport.ps1`.
