@@ -1,5 +1,9 @@
 # PSBackup ChangeLog
 
+## January 27, 2021
+
++ Added `Yesterday` parameter to `Get-MyBackupFile`.
+
 ## January 24, 2021
 
 + Modified `Add-BackupEntry` to define an alias `abe`.

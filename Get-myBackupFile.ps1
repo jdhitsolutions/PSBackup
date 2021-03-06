@@ -28,7 +28,9 @@ Source C:\scripts\PSBackup\Get-MyBackupFile.ps1
         [switch]$IncrementalOnly,
         [Parameter(HelpMessage = "Get the last X number of raw files")]
         [ValidateScript({$_ -ge 1})]
-        [int]$Last
+        [int]$Last,
+        [Parameter(HelpMessage = "Get files created yesterday")]
+        [switch]$Yesterday
         )
 
         #convert path to a full filesystem path
@@ -39,7 +41,7 @@ Source C:\scripts\PSBackup\Get-MyBackupFile.ps1
         [regex]$rx = "^20\d{6}_(?<set>\w+)-(?<type>\w+)\.((rar)|(zip))$"
 
         <#
-        I am doing so 'pre-filtering' on the file extension and then using the regular
+        I am doing some 'pre-filtering' on the file extension and then using the regular
         expression filter to fine tune the results
         #>
         Write-Verbose "Getting zip and rar files from $Path"
@@ -68,8 +70,12 @@ Source C:\scripts\PSBackup\Get-MyBackupFile.ps1
             $item.psobject.TypeNames.Insert(0,"myBackupFile")
         }
 
+        if ($Yesterday) {
+            $yd = (Get-Date).AddDays(-1).Date
+            $files = $files | Where-Object {$_.lastwritetime -ge $yd}
+        }
         if ($Last -gt 0) {
-            $files | Sort-object Created | Select-object -Last $last
+            $files | Sort-Object Created | Select-Object -Last $last
         }
         else {
             $files | Sort-Object BackupSet,Created
@@ -79,5 +85,6 @@ Source C:\scripts\PSBackup\Get-MyBackupFile.ps1
 #define some alias properties for the custom object type
 Update-TypeData -typename "myBackupFile" -MemberType AliasProperty -memberName Size -Value Length -force
 Update-TypeData -typename "myBackupFile" -MemberType AliasProperty -memberName Created -Value CreationTime -force
+
 #load the custom format file
 Update-FormatData $PSScriptRoot\mybackupfile.format.ps1xml

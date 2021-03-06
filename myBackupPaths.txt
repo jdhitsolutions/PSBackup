@@ -10,3 +10,5 @@ C:\Scripts
 D:\OneDrive\PSProfiles
 D:\jdhit
 #D:\ToolmakingBook
+#D:\PowerShellPracticePrimer
+
