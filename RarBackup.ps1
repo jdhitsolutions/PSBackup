@@ -25,15 +25,14 @@ Param(
 Write-Verbose "[$(Get-Date)] Starting $($myinvocation.MyCommand)"
 Write-Host "[$(Get-Date)] Starting $($myinvocation.MyCommand) $Type for $Path" -foreground green
 
-if (-Not (Get-Module Dev-PSRar)) {
-    Import-Module C:\scripts\PSRAR\Dev-PSRar.psm1 -Force
+if (-Not (Get-Module PSRar)) {
+    Import-Module C:\scripts\PSBackup\PSRar.psm1 -Force
 }
 
 #replace spaces in path names
 $name = "{0}_{1}-{2}.rar" -f (Get-Date -Format "yyyyMMdd"), (Split-Path -Path $Path -Leaf).replace(' ', ''), $Type
 $target = Join-Path -Path $TempPath -ChildPath $name
 
-#I have hard coded my NAS backup. Would be better as a parameter with a default value.
 $nasPath = Join-Path -Path $Destination -ChildPath $name
 Write-Host "[$(Get-Date)] Archiving $path to $target" -foreground green
 

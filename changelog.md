@@ -1,5 +1,11 @@
 # PSBackup ChangeLog
 
+## April 3, 2021
+
++ Renamed `WeeklyFullBackup.ps1xml` to `Invoke-FullBackup.ps1`. Created a new `WeeklyFullBackup.ps1` file to only back up folders that have pending incremental backup files. There's no reason to backup a folder if nothing has changed.
++ Added `BuildList.ps1` to create the list of paths for the weekly full backup based on existing incremental backups and logged changes that haven't been backed up yet.
++ Updated `PSRar.psm1` and removed references to the the Dev version of the module.
+
 ## January 27, 2021
 
 + Added `Yesterday` parameter to `Get-MyBackupFile`.

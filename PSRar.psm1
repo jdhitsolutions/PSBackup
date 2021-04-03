@@ -31,46 +31,42 @@ Function Get-RARExe {
 
 
 #don't run this in the ISE. Redirection doesn't work.
+
 Function Add-RARContent {
 
-<#
-.Synopsis
-Add files to an archive
-.Description
-Add a folder to a RAR archive.
-.Example
-PS C:\> Add-Rarcontent c:\work e:\MyArchive.zip
-.Notes
-Last Updated:
-Version     : 0.9.1
+    <#
+ .Synopsis
+ Add files to an archive
+ .Description
+ Add a folder to a RAR archive.
+ .Example
+ PS C:\> Add-Rarcontent c:\work e:\MyArchive.zip
+ .Notes
+ Last Updated:
+ Version     : 0.9.1
 
-.Link
-http://jdhitsolutions.com/blog
-#>
+ .Link
+ http://jdhitsolutions.com/blog
+ #>
 
     [cmdletbinding(SupportsShouldProcess)]
 
     Param(
-        [Parameter(
-            Position = 0,
-            Mandatory,
-            HelpMessage = "Enter the path to the objects to be archived."
-            )]
+        [Parameter(Position = 0, Mandatory,
+            HelpMessage = "Enter the path to the objects to be archived.")]
         [ValidateNotNullOrEmpty()]
         [SupportsWildCards()]
         [alias("path")]
         [string]$Object,
-        [Parameter(
-            Position = 1,
-            Mandatory,
-            HelpMessage = "Enter the path to RAR archive."
-            )]
+        [Parameter(Position = 1, Mandatory, HelpMessage = "Enter the path to RAR archive.")]
         [ValidateNotNullOrEmpty()]
         [string]$Archive,
         [switch]$MoveFiles,
         [ValidateSet(1, 2, 3, 4, 5)]
         [int]$CompressionLevel = 5,
-        [string]$Comment = ("Archive created {0} by {1}\{2}" -f (Get-Date), $env:userdomain, $env:username)
+        [string]$Comment = ("Archive created {0} by {1}\{2}" -f (Get-Date), $env:userdomain, $env:username),
+        [Parameter(HelpMessage = "A text file with files and/or paths to exclude from the archive.")]
+        [string]$ExcludeFile
     )
 
     Begin {
@@ -79,30 +75,31 @@ http://jdhitsolutions.com/blog
         Write-Verbose "Using $rar"
 
         <#
-    add|move files using update method
-    dictionary size is 4k
-    store paths
-    store NTFS streams
-    use a recovery record
-    set compression level
-    test archive
-    recurse subfolders
-    use quiet mode
-    -id[c,d,p,q]
-        Disable messages.
-        Switch -idc disables the copyright string.
-        Switch -idd disables “Done” string at the end of operation.
-        Switch -idp disables the percentage indicator.
-        Switch -idq turns on the quiet mode, so only error messages
-        and questions are displayed.
-    Use $env:temp as the temp folder
-   #>
+     add|move files using update method
+     dictionary size is 4k
+     store paths
+     store NTFS streams
+     use a recovery record
+     set compression level
+     test archive
+     recurse subfolders
+     use quiet mode
+     -id[c,d,p,q]
+         Disable messages.
+         Switch -idc disables the copyright string.
+         Switch -idd disables “Done” string at the end of operation.
+         Switch -idp disables the percentage indicator.
+         Switch -idq turns on the quiet mode, so only error messages
+         and questions are displayed.
+     Use $env:temp as the temp folder
+    #>
 
         #if delete files
         if ($MoveFiles) {
             Write-Verbose "Using command to move files after archiving"
             $action = "m"
             $verb = "Move"  #used with Write-Progress
+
         }
         else {
             Write-Verbose "Using command to add files after archiving"
@@ -110,10 +107,17 @@ http://jdhitsolutions.com/blog
             $verb = "Add" #Used with Write-Progress
         }
 
-        $rarparam = @"
-{1} -u -ep1 -os -rr -m{0} -t -r -iddc -w{2}
-"@ -f $CompressionLevel, $action, $env:temp
-
+        [string]$rarParam = "$action"
+        if (Test-Path $ExcludeFile) {
+            Write-Verbose "Using exclusion file $ExcludeFile"
+            $rarParam += " -x@$ExcludeFile"
+        }
+        <#
+         $rarparam = @"
+ {1} -u -ep1 -os -rr -m{0} -t -r -iddc -w{2}
+ "@ -f $CompressionLevel, $action, $env:temp
+ #>
+        $rarParam += " -u -ep1 -os -rr -m$($CompressionLevel) -t -r -iddc -w$($env:temp)"
     } #begin
 
     Process {
@@ -168,9 +172,7 @@ c -z{0} {1} -rr -idq
 
         Write-Verbose "Ending $($MyInvocation.MyCommand)"
     } #end
-
-} #end function
-
+} #close Add-RARContent
 Function Test-RARFile {
     [cmdletbinding()]
 
@@ -193,7 +195,7 @@ Function Test-RARFile {
         Write-Verbose "Testing $path"
 
         $sb = [scriptblock]::Create("$rar t '$path' -idp")
-        $a = Invoke-Command -scriptblock $sb
+        $a = Invoke-Command -ScriptBlock $sb
 
         Write-Verbose "Parsing results into objects"
         #this is a matchinfo object
@@ -232,7 +234,7 @@ Function Show-RARContent {
             Mandatory,
             HelpMessage = "Enter the path to a .RAR file.",
             ValueFromPipeline
-            )]
+        )]
         [string]$Path,
         [switch]$Detailed
     )
@@ -255,7 +257,7 @@ Function Show-RARContent {
             Write-Verbose -Message "Getting technical details for $path"
 
             $sb = [scriptblock]::Create("$rar vl '$path'")
-            Invoke-Command -scriptblock $sb
+            Invoke-Command -ScriptBlock $sb
 
         } #else technical
     } #process
@@ -264,7 +266,6 @@ Function Show-RARContent {
         Write-Verbose -Message "Ending $($MyInvocation.Mycommand)"
     } #end
 } #end Show-RARContent
-
 
 
 Function Show-RARContent2 {
@@ -276,7 +277,7 @@ Function Show-RARContent2 {
             Mandatory,
             HelpMessage = "Enter the path to a .RAR file.",
             ValueFromPipeline
-            )]
+        )]
         [string]$Path,
         [switch]$Detailed
     )
@@ -299,9 +300,9 @@ Function Show-RARContent2 {
             Write-Verbose -Message "Getting technical details for $path"
 
             $sb = [scriptblock]::Create("$rar vl '$path'")
-            $out = Invoke-Command -scriptblock $sb
+            $out = Invoke-Command -ScriptBlock $sb
             $total = ($out | Where-Object { $_ -match "%" } | Select-Object -Last 1).Trim()
-          #  $details = $out | Where-Object { $_ -match "\d{4}-\d{2}-\d{2}" }
+            #  $details = $out | Where-Object { $_ -match "\d{4}-\d{2}-\d{2}" }
 
             Write-Verbose "Parsing $Total"
             #parse details out of totals

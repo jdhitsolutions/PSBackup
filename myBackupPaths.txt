@@ -1,14 +1,15 @@
 ﻿#comment out paths with a # symbol at the beginning of the line
 #you can't use $ENV variables or shell shortcuts like ~
 
+#the first four characters of the directory need to be unique
+
 C:\users\jeff\documents
 C:\Users\Jeff\Google Drive
 C:\users\jeff\dropbox
 C:\Scripts
-#C:\Presentations
+C:\Presentations
 #C:\Training
 D:\OneDrive\PSProfiles
 D:\jdhit
 #D:\ToolmakingBook
 #D:\PowerShellPracticePrimer
-

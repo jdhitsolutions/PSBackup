@@ -28,7 +28,6 @@ Write-Host "[$(Get-Date)] Starting Daily Incremental" -ForegroundColor Cyan
 
 #this is my internal archiving code. You can use whatever you want.
 Try {
-    #Import-Module C:\scripts\PSRAR\Dev-PSRar.psm1 -Force -ErrorAction Stop
     Import-Module $codeDir\PSRar.psm1 -Force -ErrorAction Stop
 }
 Catch {
