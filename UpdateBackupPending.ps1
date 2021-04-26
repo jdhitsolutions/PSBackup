@@ -1,6 +1,9 @@
 #requires -version 5.1
 
-#update backup pending CSV file with updates sizes and deleting files that are gone
+<#
+update backup pending CSV file with updates sizes and dates
+as well as deleting files that have since been deleted
+#>
 
 [cmdletbinding(SupportsShouldProcess)]
 
@@ -31,7 +34,10 @@ Process {
 
         Write-Verbose "Processing $($csv.count) items"
         $updated = $csv.where({ Test-Path $_.Path }).foreach({
+                #get the current version of the file
                 $now = Get-Item $_.path -Force
+
+                #update size
                 if ($now.length -ne $_.Size) {
                     Write-Verbose "Updating file size for $($_.path) from $($_.size) to $($now.length)"
                     if ($in.count -eq 1) {
@@ -40,6 +46,12 @@ Process {
                     else {
                         $_.size = $now.length
                     }
+                }
+                #Update date
+                if ($now.LastWriteTime -gt [datetime]$_.Date) {
+                    Write-Verbose "Updating $($now.name) date from $($_.Date) to $($now.lastWriteTime)"
+                   # $_ | out-String | write-Verbose
+                    $_[0].Date = ("{0:g}" -f $now.LastWriteTime)
                 }
                 $_
             })

@@ -15,16 +15,14 @@ https://github.com/jdhitsolutions/PSScriptTools
         <TypeName>myBackupFile</TypeName>
       </ViewSelectedBy>
       <GroupBy>
-        <!--
-            You can also use a scriptblock to define a custom property name.
-            You must have a Label tag.
-            <ScriptBlock>$_.machinename.toUpper()</ScriptBlock>
-            <Label>Computername</Label>
-
-            Use <Label> to set the displayed value.
--->
         <ScriptBlock>
-        "$([char]0x1b)[38;5;217m{0}{1}$([char]0x1b)[0m" -f ($($_.BackupSet)[0].tostring().toupper()),$($_.Backupset).Substring(1)
+        $ln = "{0}{1}" -f ($($_.BackupSet)[0].tostring().toupper()),$($_.Backupset).Substring(1)
+        if ($host.name -match 'console') {
+        "$([char]27)[38;5;217m$ln$([char]27)[0m"
+        }
+        else{
+          $ln
+        }
         </ScriptBlock>
         <Label>BackupSet</Label>
       </GroupBy>
@@ -51,10 +49,6 @@ https://github.com/jdhitsolutions/PSScriptTools
         <TableRowEntries>
           <TableRowEntry>
             <TableColumnItems>
-              <!--
-            By default the entries use property names, but you can replace them with scriptblocks.
-            <ScriptBlock>$_.foo /1mb -as [int]</ScriptBlock>
--->
               <TableColumnItem>
                 <PropertyName>Created</PropertyName>
               </TableColumnItem>
@@ -71,8 +65,81 @@ https://github.com/jdhitsolutions/PSScriptTools
               <TableColumnItem>
                 <ScriptBlock>
                   <!-- highlight incremental backups-->
-                  if ($_.settype -eq 'Incremental') {
-                   "$([char]0x1b)[38;5;191m$($_.name)$([char]0x1b)[0m"
+                  if ($host.name -match 'console' -AND $_.settype -eq 'Incremental') {
+                   "$([char]27)[38;5;191m$($_.name)$([char]27)[0m"
+                  }
+                  else {
+                    $_.Name
+                  }
+                </ScriptBlock>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
+        <View>
+      <!--
+        Created 4/13/2021 7:55 AM by PROSPERO\Jeff
+        Thiis is a copy of the default view, formatting sizes in KB
+      -->
+      <Name>kb</Name>
+      <ViewSelectedBy>
+        <TypeName>myBackupFile</TypeName>
+      </ViewSelectedBy>
+      <GroupBy>
+        <ScriptBlock>
+        $ln = "{0}{1}" -f ($($_.BackupSet)[0].tostring().toupper()),$($_.Backupset).Substring(1)
+        if ($host.name -match 'console') {
+        "$([char]27)[38;5;217m$ln$([char]27)[0m"
+        }
+        else{
+          $ln
+        }
+        </ScriptBlock>
+        <Label>BackupSet</Label>
+      </GroupBy>
+      <TableControl>
+        <!--Delete the AutoSize node if you want to use the defined widths.
+        <AutoSize />-->
+        <TableHeaders>
+          <TableColumnHeader>
+            <Label>Created</Label>
+            <Width>25</Width>
+            <Alignment>left</Alignment>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>SizeKB</Label>
+            <Width>10</Width>
+            <Alignment>right</Alignment>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Name</Label>
+            <Width>40</Width>
+            <Alignment>left</Alignment>
+          </TableColumnHeader>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <TableColumnItems>
+              <TableColumnItem>
+                <PropertyName>Created</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <ScriptBlock>
+                if ($_.Size -lt 1KB) {
+                  [math]::round($_.Length/1KB,4)
+                }
+                else {
+                  $_.Size/1KB -as [int]
+                }
+                </ScriptBlock>
+              </TableColumnItem>
+              <TableColumnItem>
+                <ScriptBlock>
+                  <!-- highlight incremental backups-->
+                  if ($host.name -match 'console' -AND $_.settype -eq 'Incremental') {
+                   "$([char]27)[38;5;191m$($_.name)$([char]27)[0m"
                   }
                   else {
                     $_.Name
@@ -91,14 +158,6 @@ https://github.com/jdhitsolutions/PSScriptTools
         <TypeName>myBackupFile</TypeName>
       </ViewSelectedBy>
       <GroupBy>
-        <!--
-            You can also use a scriptblock to define a custom property name.
-            You must have a Label tag.
-            <ScriptBlock>$_.machinename.toUpper()</ScriptBlock>
-            <Label>Computername</Label>
-
-            Use <Label> to set the displayed value.
--->
         <PropertyName>Directory</PropertyName>
         <Label>Directory</Label>
       </GroupBy>
@@ -130,10 +189,6 @@ https://github.com/jdhitsolutions/PSScriptTools
         <TableRowEntries>
           <TableRowEntry>
             <TableColumnItems>
-              <!--
-            By default the entries use property names, but you can replace them with scriptblocks.
-            <ScriptBlock>$_.foo /1mb -as [int]</ScriptBlock>
--->
               <TableColumnItem>
                 <PropertyName>Created</PropertyName>
               </TableColumnItem>

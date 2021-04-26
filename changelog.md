@@ -1,5 +1,18 @@
 # PSBackup ChangeLog
 
+## TO-DO
+
++ Revise as a PowerShell module
+
+## April 13, 2021
+
++ Added a table view called KB to `mybackupfile.format.ps1xml` which is a duplicate of the default except showing file sizes in KB.
++ Created `myBackupPendingSummary.ps1` with custom format file `pending.format.ps1xml`.
++ Modified `myBackupPending.ps1` to write a custom object to the pipeline using a table view defined in `pending.format.ps1xml`. The summary is now separate from the list of pending files.
++ Removed `-Raw` from `myBackupPending.ps1`. Use `Select-Object` to see all properties.
++ Added script file `loadformat.ps1` to load format.ps1xml files.
++ Updated `UpdateBackupPending.ps1` to update the file date in the CSV file.
+
 ## April 3, 2021
 
 + Renamed `WeeklyFullBackup.ps1xml` to `Invoke-FullBackup.ps1`. Created a new `WeeklyFullBackup.ps1` file to only back up folders that have pending incremental backup files. There's no reason to backup a folder if nothing has changed.
