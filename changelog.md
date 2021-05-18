@@ -4,6 +4,11 @@
 
 + Revise as a PowerShell module
 
+## May 18, 2021
+
++ Modified `Add-BackupEntry` to use normalized file system path.
++ Modified `Add-BackupEntry` to handle paths with spaces like "Google Drive"
+
 ## April 13, 2021
 
 + Added a table view called KB to `mybackupfile.format.ps1xml` which is a duplicate of the default except showing file sizes in KB.

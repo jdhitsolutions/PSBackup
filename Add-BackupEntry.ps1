@@ -4,7 +4,7 @@ Function Add-BackupEntry {
 
 <# PSFunctionInfo
 
-Version 1.3.0
+Version 1.4.1
 Author Jeffery Hicks
 CompanyName JDH IT Solutions, Inc.
 Copyright (c) 2020-2021 JDH IT Solutions, Inc.
@@ -39,9 +39,14 @@ Source C:\scripts\PSBackup\Add-BackupEntry.ps1
     } #begin
 
     Process {
-        Write-Verbose "[PROCESS] Adding: $Path"
+        $cPath = Convert-Path $path
+        Write-Verbose "[PROCESS] Adding: $cPath"
 
-        $file = Get-Item $Path
+        $file = Get-Item $cPath
+        #the Google Drive path is different than the BackupSet name
+        if ($BackupSet -eq 'GoogleDrive') {
+            $BackupSet = "Google Drive"
+        }
         $add += [pscustomobject]@{
             ID        = 99999
             Date      = $file.LastWriteTime

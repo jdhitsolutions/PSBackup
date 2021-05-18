@@ -88,13 +88,13 @@ $paths | ForEach-Object {
     #trim old backups
     Write-Host "[$(Get-Date)] Trimming backups from $Destination" -ForegroundColor yellow
     if ($OK -and ($PSCmdlet.ShouldProcess($Destination, "Trim backups"))) {
-        &"$CodeDir\mybackuptrim.ps1" -path $Destination -count 4
+        &"$CodeDir\mybackuptrim.ps1" -path $Destination -count 3
     } #whatif
 
     #I am also backing up a smaller subset to OneDrive
     Write-Host "[$(Get-Date)] Trimming backups from $env:OneDriveConsumer\backup" -ForegroundColor yellow
     if ($OK -and ($PSCmdlet.ShouldProcess("OneDrive", "Trim backups"))) {
-        &"$CodeDir\mybackuptrim.ps1" -path $env:OneDriveConsumer\backup -count 2
+        &"$CodeDir\mybackuptrim.ps1" -path $env:OneDriveConsumer\backup -count 1
     }
 } #foreach path
 
