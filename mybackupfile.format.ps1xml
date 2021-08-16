@@ -17,7 +17,7 @@ https://github.com/jdhitsolutions/PSScriptTools
       <GroupBy>
         <ScriptBlock>
         $ln = "{0}{1}" -f ($($_.BackupSet)[0].tostring().toupper()),$($_.Backupset).Substring(1)
-        if ($host.name -match 'console') {
+        if ($host.name -match 'console|code') {
         "$([char]27)[38;5;217m$ln$([char]27)[0m"
         }
         else{
@@ -65,7 +65,7 @@ https://github.com/jdhitsolutions/PSScriptTools
               <TableColumnItem>
                 <ScriptBlock>
                   <!-- highlight incremental backups-->
-                  if ($host.name -match 'console' -AND $_.settype -eq 'Incremental') {
+                  if ($host.name -match 'console|code' -AND $_.settype -eq 'Incremental') {
                    "$([char]27)[38;5;191m$($_.name)$([char]27)[0m"
                   }
                   else {
@@ -90,7 +90,7 @@ https://github.com/jdhitsolutions/PSScriptTools
       <GroupBy>
         <ScriptBlock>
         $ln = "{0}{1}" -f ($($_.BackupSet)[0].tostring().toupper()),$($_.Backupset).Substring(1)
-        if ($host.name -match 'console') {
+        if ($host.name -match 'console|code') {
         "$([char]27)[38;5;217m$ln$([char]27)[0m"
         }
         else{
@@ -138,7 +138,7 @@ https://github.com/jdhitsolutions/PSScriptTools
               <TableColumnItem>
                 <ScriptBlock>
                   <!-- highlight incremental backups-->
-                  if ($host.name -match 'console' -AND $_.settype -eq 'Incremental') {
+                  if ($host.name -match 'console|code' -AND $_.settype -eq 'Incremental') {
                    "$([char]27)[38;5;191m$($_.name)$([char]27)[0m"
                   }
                   else {

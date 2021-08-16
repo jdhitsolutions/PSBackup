@@ -79,12 +79,12 @@ foreach ($path in $paths) {
     #get some stats about the data to be archived
     $stats = Get-ChildItem -path $tmpParent -file -Recurse | Measure-Object -Property length -sum
     Write-Host "[$(Get-Date)] Creating $archive from $tmpParent" -fore green
-    Write-Host "[$(Get-Date)] $($stats.count) files totally $($stats.sum)" -fore green
+    Write-Host "[$(Get-Date)] $($stats.count) files totaling $($stats.sum)" -fore green
 
     #uncommment for debugging
     #Pause
 
-    Add-RARContent -Object $tmpParent -Archive $archive -CompressionLevel 5 -Comment "Incremental backup $(Get-Date)" -verbose
+    Add-RARContent -Object $tmpParent -Archive $archive -CompressionLevel 5 -Comment "Incremental backup $(Get-Date)" -excludeFile C:\scripts\PSBackup\exclude.txt -verbose
     Write-Host "[$(Get-Date)] Moving $archive to NAS" -fore green
     if ($pscmdlet.ShouldProcess($archive,"Move file")) {
         Move-Item -Path $archive -Destination \\ds416\backup -Force

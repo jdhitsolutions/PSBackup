@@ -3,6 +3,5 @@ C:\users\jeff\documents\windowsPowershell\modules\*
 C:\scripts\testing\*
 c:\users\jeff\dropbox\dropbox.ini
 c:\users\jeff\dropbox\mycomics\*
-C:\work\demo\*
-C:\work\data\exclude\*
-c:\work\*.psd1
+C:\Users\Jeff\Documents\MuseScore3\SoundFonts\*
+C:\Users\Jeff\Documents\Camtasia\adk-suite.tscproj\*

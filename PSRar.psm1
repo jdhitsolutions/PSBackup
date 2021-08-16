@@ -108,7 +108,7 @@ Function Add-RARContent {
         }
 
         [string]$rarParam = "$action"
-        if (Test-Path $ExcludeFile) {
+        if ($ExcludeFile -AND (Test-Path $ExcludeFile)) {
             Write-Verbose "Using exclusion file $ExcludeFile"
             $rarParam += " -x@$ExcludeFile"
         }
