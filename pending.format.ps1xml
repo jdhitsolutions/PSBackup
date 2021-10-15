@@ -146,5 +146,48 @@ Total SizeKB:  $($_.TotalSizeKB)
         </TableRowEntries>
       </TableControl>
     </View>
+    <View>
+      <!--Created 10/15/2021 14:06:40 by PROSPERO\Jeff-->
+      <Name>filelist</Name>
+      <ViewSelectedBy>
+        <TypeName>pendingFile</TypeName>
+      </ViewSelectedBy>
+      <GroupBy>
+        <!--
+            You can also use a scriptblock to define a custom property name.
+            You must have a Label tag.
+            <ScriptBlock>$_.machinename.toUpper()</ScriptBlock>
+            <Label>Computername</Label>
+
+            Use <Label> to set the displayed value.
+-->
+        <PropertyName>Log</PropertyName>
+        <Label>Log</Label>
+      </GroupBy>
+      <TableControl>
+        <!--Delete the AutoSize node if you want to use the defined widths.-->
+        <AutoSize />
+        <TableHeaders>
+          <TableColumnHeader>
+            <Label>Path</Label>
+            <Width>57</Width>
+            <Alignment>left</Alignment>
+          </TableColumnHeader>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <TableColumnItems>
+              <!--
+            By default the entries use property names, but you can replace them with scriptblocks.
+            <ScriptBlock>$_.foo /1mb -as [int]</ScriptBlock>
+-->
+              <TableColumnItem>
+                <PropertyName>Path</PropertyName>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
   </ViewDefinitions>
 </Configuration>
