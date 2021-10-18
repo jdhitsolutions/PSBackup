@@ -161,8 +161,8 @@ Total SizeKB:  $($_.TotalSizeKB)
 
             Use <Label> to set the displayed value.
 -->
-        <PropertyName>Log</PropertyName>
-        <Label>Log</Label>
+        <PropertyName>Set</PropertyName>
+        <Label>Set</Label>
       </GroupBy>
       <TableControl>
         <!--Delete the AutoSize node if you want to use the defined widths.-->

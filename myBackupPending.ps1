@@ -36,6 +36,7 @@ Write-Verbose "Found $($files.count) unique files"
 $files | ForEach-Object {
     #insert a new typename
     $_.psobject.typenames.insert(0,'pendingFile')
+    $_ | Add-Member -MemberType ScriptProperty -Name Set -value {(split-path $this.log -Leaf).split("-")[0] }
     $_ | Add-Member -MemberType ScriptProperty -Name FileName -Value {Split-Path $this.path -leaf} -PassThru
 } | Sort-Object -Property Log, Directory, Name
 
