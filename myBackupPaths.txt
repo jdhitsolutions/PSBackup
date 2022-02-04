@@ -8,8 +8,9 @@ C:\Users\Jeff\Google Drive
 C:\users\jeff\dropbox
 C:\Scripts
 C:\Presentations
-#C:\Training
+C:\Training
 D:\OneDrive\PSProfiles
+D:\OneDrive\substack
 D:\jdhit
 #D:\ToolmakingBook
 #D:\PowerShellPracticePrimer
