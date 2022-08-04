@@ -1,7 +1,10 @@
 C:\Users\Jeff\Documents\PowerShell\Help\*
+C:\Users\Jeff\Documents\Powershell\modules\*
 C:\users\jeff\documents\windowsPowershell\modules\*
 C:\scripts\testing\*
 c:\users\jeff\dropbox\dropbox.ini
+C:\users\jeff\dropbox\remoteop\*
+C:\users\jeff\dropbox\remoteop7\*
 c:\users\jeff\dropbox\mycomics\*
 C:\Users\Jeff\Documents\MuseScore3\SoundFonts\*
 C:\Users\Jeff\Documents\Camtasia\adk-suite.tscproj\*

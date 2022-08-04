@@ -21,3 +21,5 @@ foreach ($set in $sets) {
     c:\scripts\PSBackup\Invoke-FullBackup.ps1 -path $set
 }
 
+# 8/4/2022 Copy Quickbook Backups to Box
+Get-ChildItem D:\OneDrive\Backup\*.qbb | Copy-Item -Destination 'C:\users\jeff\Box\Default Sync Folder\'

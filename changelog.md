@@ -4,6 +4,12 @@
 
 + Revise as a PowerShell module
 
+## August 4, 2022
+
++ Updated Exclude file
++ Added a Quickbooks backup to Box as part of the weekly backup.
++ Added `loadformats.ps1`.
+
 ## May 18, 2021
 
 + Modified `Add-BackupEntry` to use normalized file system path.
