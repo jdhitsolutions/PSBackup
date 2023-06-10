@@ -7,4 +7,5 @@ C:\users\jeff\dropbox\remoteop\*
 C:\users\jeff\dropbox\remoteop7\*
 c:\users\jeff\dropbox\mycomics\*
 C:\Users\Jeff\Documents\MuseScore3\SoundFonts\*
+C:\Users\Jeff\Documents\MuseScore4\SoundFonts\*
 C:\Users\Jeff\Documents\Camtasia\adk-suite.tscproj\*
