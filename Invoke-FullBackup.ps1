@@ -1,20 +1,20 @@
 #requires -version 5.1
 #requires -module BurntToast,PSScriptTools
 
-[cmdletbinding(SupportsShouldProcess, DefaultParameterSetName = "list")]
+[CmdletBinding(SupportsShouldProcess, DefaultParameterSetName = "list")]
 Param(
     [Parameter(Position = 0, HelpMessage = "Path to a text file with folders to backup.", ParameterSetName = "List")]
     [ValidateNotNullOrEmpty()]
     [ValidateScript( { Test-Path $_ })]
-    [string]$PathList = "c:\scripts\PSBackup\mybackupPaths.txt",
+    [String]$PathList = "c:\scripts\PSBackup\mybackupPaths.txt",
 
     [Parameter(Position = 0, HelpMessage = "Specify a single folder to backup", ParameterSetName = "Single")]
     [ValidateScript( { Test-Path $_ })]
-    [string]$Path,
+    [String]$Path,
 
     [Parameter(Position = 0, HelpMessage = "The destination folder for the backup files")]
     [ValidateNotNullOrEmpty()]
-    [string]$Destination = "\\ds416\backup"
+    [String]$Destination = "\\ds416\backup"
 )
 
 <#
@@ -23,8 +23,8 @@ run this as a scheduled job, there is no $PSScriptRoot or $MyInvocation
 #>
 #create a transcript log file
 $log = New-CustomFileName -Template "WeeklyFull_%year%month%day%hour%minute%seconds-%###.txt"
-$logpath = Join-Path -Path D:\temp -ChildPath $log
-Start-Transcript -Path $logpath
+$LogPath = Join-Path -Path D:\temp -ChildPath $log
+Start-Transcript -Path $LogPath
 
 $codeDir = "C:\scripts\PSBackup"
 
@@ -53,7 +53,7 @@ elseif ($PSCmdlet.ParameterSetName -eq 'single') {
 
 $paths | ForEach-Object {
 
-    if ($pscmdlet.ShouldProcess($_)) {
+    if ($PSCmdlet.ShouldProcess($_)) {
         Try {
             #invoke a control script using my custom module
             Write-Host "[$(Get-Date)] Backing up $_" -ForegroundColor yellow
@@ -73,23 +73,23 @@ $paths | ForEach-Object {
     #specify the directory for the CSV log files
     $log = "D:\Backup\{0}-log.csv" -f $name
 
-    if ($OK -AND (Test-Path $log) -AND ($pscmdlet.ShouldProcess($log, "Clear Log"))) {
+    if ($OK -AND (Test-Path $log) -AND ($PSCmdlet.ShouldProcess($log, "Clear Log"))) {
         Write-Host "[$(Get-Date)] Removing $log" -ForegroundColor yellow
         Remove-Item -Path $log
-    } #whatif
+    } #WhatIf
 
-    #clear incrementals
+    #clear incremental backups
     $target = Join-Path -Path $Destination -ChildPath "*_$name-incremental.rar"
-    if ($ok -AND ($PScmdlet.ShouldProcess($target, "Clear Incrementals"))) {
+    if ($ok -AND ($PSCmdlet.ShouldProcess($target, "Clear Incremental BackUps"))) {
         Write-Host "[$(Get-Date)] Removing $Target" -ForegroundColor yellow
         Remove-Item $target
-    } #whatif
+    } #WhatIf
 
     #trim old backups
     Write-Host "[$(Get-Date)] Trimming backups from $Destination" -ForegroundColor yellow
     if ($OK -and ($PSCmdlet.ShouldProcess($Destination, "Trim backups"))) {
-        &"$CodeDir\mybackuptrim.ps1" -path $Destination -count 3
-    } #whatif
+        &"$CodeDir\mybackuptrim.ps1" -path $Destination -count 2
+    } #WhatIf
 
     #I am also backing up a smaller subset to OneDrive
     Write-Host "[$(Get-Date)] Trimming backups from $env:OneDriveConsumer\backup" -ForegroundColor yellow
@@ -100,14 +100,14 @@ $paths | ForEach-Object {
 
 #send a toast notification
 $params = @{
-    Text    = "Backup Task Complete. View log at $logpath"
+    Text    = "Backup Task Complete. View log at $LogPath"
     Header  = $(New-BTHeader -Id 1 -Title "Weekly Full Backup")
     Applogo = "c:\scripts\db.png"
 }
 
 Write-Host "[$(Get-Date)] Ending Weekly Full Backup" -ForegroundColor green
 
-#don't run if using -Whatif
+#don't run if using -WhatIf
 if (-Not $WhatIfPreference) {
     New-BurntToastNotification @params
     Stop-Transcript

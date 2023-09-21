@@ -1,10 +1,10 @@
 #requires -version 5.1
 #requires -module CimCmdlets,BurntToast
 
-[cmdletbinding(SupportsShouldProcess)]
+[CmdletBinding(SupportsShouldProcess)]
 Param()
 
-Write-Verbose "Starting $($myinvocation.MyCommand)"
+Write-Verbose "Starting $($MyInvocation.MyCommand)"
 #verify the scheduled task exists and bail out if it doesn't.
 $name = "DailyWatcher"
 
@@ -81,4 +81,4 @@ Catch {
     }
 }
 
-Write-Verbose "Ending $($myinvocation.MyCommand)"
+Write-Verbose "Ending $($MyInvocation.MyCommand)"

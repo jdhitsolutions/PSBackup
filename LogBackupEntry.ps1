@@ -1,6 +1,6 @@
-﻿#requires -version 5.1
+#requires -version 5.1
 
-[cmdletbinding()]
+[CmdletBinding()]
 [alias("lbe")]
 Param(
   [Parameter(Mandatory)]
@@ -9,11 +9,11 @@ Param(
 
   [Parameter(Mandatory)]
   [ValidateNotNullOrEmpty()]
-  [string]$CSVPath,
+  [String]$CSVPath,
 
   [Parameter(HelpMessage = "Specify the path to a text file with a list of paths to exclude from backup")]
   [ValidateScript( { Test-Path $_ })]
-  [string]$ExclusionList = "c:\scripts\PSBackup\Exclude.txt"
+  [String]$ExclusionList = "c:\scripts\PSBackup\Exclude.txt"
 )
 
 if (Test-Path $ExclusionList) {
@@ -56,21 +56,21 @@ if (Test-Path $event.SourceEventArgs.fullpath) {
     #get current contents of CSV file and only add the file if it doesn't exist
     If (Test-Path $CSVPath) {
       $in = (Import-Csv -Path $CSVPath).path | Get-Unique -AsString
-      if ($in -contains $f.fullname) {
+      if ($in -contains $f.FullName) {
         if ($logfile) { "$(Get-Date) DUPLICATE ENTRY $($f.FullName)" | Out-File -FilePath $logfile -Append }
       }
     }
     #only save files and not a temp file
-    if (($in -notcontains $f.fullname) -AND (-Not $f.psiscontainer) -AND ($f.basename -notmatch "(^(~|__rar).*)|(.*\.tmp$)")) {
+    if (($in -notcontains $f.FullName) -AND (-Not $f.PSIsContainer) -AND ($f.basename -notmatch "(^(~|__rar).*)|(.*\.tmp$)")) {
 
       if ($logfile) { "$(Get-Date) Saving to $CSVPath" | Out-File -FilePath $logfile -Append }
 
       #write the object to the CSV file
-      [pscustomobject]@{
+      [PSCustomObject]@{
         ID        = $event.EventIdentifier
         Date      = $event.timeGenerated
         Name      = $event.sourceEventArgs.Name
-        IsFolder  = $f.PSisContainer
+        IsFolder  = $f.PSIsContainer
         Directory = $f.DirectoryName
         Size      = $f.length
         Path      = $event.sourceEventArgs.FullPath

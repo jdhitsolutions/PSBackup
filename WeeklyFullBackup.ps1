@@ -3,16 +3,16 @@
 
 #only do a full backup if there was an incremental
 
-[cmdletbinding(SupportsShouldProcess)]
+[CmdletBinding(SupportsShouldProcess)]
 Param(
     [Parameter(Position = 0, HelpMessage = "Path to a text file with folders to backup.")]
     [ValidateNotNullOrEmpty()]
     [ValidateScript( { Test-Path $_ })]
-    [string]$PathList = "c:\scripts\PSBackup\mybackupPaths.txt",
+    [String]$PathList = "c:\scripts\PSBackup\mybackupPaths.txt",
 
     [Parameter(Position = 1, HelpMessage = "The destination folder for the backup files")]
     [ValidateNotNullOrEmpty()]
-    [string]$Destination = "\\ds416\backup"
+    [String]$Destination = "\\ds416\backup"
 )
 
 $sets = C:\scripts\PSBackup\BuildList.ps1 -PathList $PathList -Destination $Destination

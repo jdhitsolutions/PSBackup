@@ -14,29 +14,29 @@ Source C:\scripts\PSBackup\Get-MyBackupFile.ps1
 
 #>
 
-    [cmdletbinding(DefaultParameterSetName = "default")]
+    [CmdletBinding(DefaultParameterSetName = "default")]
     [alias("gbf")]
-    [outputType("myBackupFile")]
+    [OutputType("myBackupFile")]
 
     Param(
         [Parameter(Position = 0, HelpMessage = "Enter the path where the backup files are stored.", ParameterSetName = "default")]
         [ValidateNotNullOrEmpty()]
         [ValidateScript( { Test-Path $_ })]
         #This is my NAS device
-        [string]$Path = "\\ds416\backup",
+        [String]$Path = "\\ds416\backup",
         [Parameter(HelpMessage = "Get only Incremental backup files")]
-        [switch]$IncrementalOnly,
+        [Switch]$IncrementalOnly,
         [Parameter(HelpMessage = "Get the last X number of raw files")]
         [ValidateScript({$_ -ge 1})]
-        [int]$Last,
+        [Int]$Last,
         [Parameter(HelpMessage = "Get files created yesterday")]
-        [switch]$Yesterday
+        [Switch]$Yesterday
         )
 
         #convert path to a full filesystem path
         $Path = Convert-Path $path
-        Write-Verbose "Starting $($myinvocation.mycommand)$ReportVer"
-        Write-Verbose "Using parameter set $($pscmdlet.ParameterSetName)"
+        Write-Verbose "Starting $($MyInvocation.MyCommand)$ReportVer"
+        Write-Verbose "Using parameter set $($PSCmdlet.ParameterSetName)"
 
         [regex]$rx = "^20\d{6}_(?<set>\w+)-(?<type>\w+)\.((rar)|(zip))$"
 
@@ -67,12 +67,12 @@ Source C:\scripts\PSBackup\Get-MyBackupFile.ps1
             $item | Add-Member -MemberType NoteProperty -Name BackupSet -Value $BackupSet -force
             $item | Add-Member -MemberType NoteProperty -Name SetType -Value $setType -force
             #insert a custom type name
-            $item.psobject.TypeNames.Insert(0,"myBackupFile")
+            $item.PSObject.TypeNames.Insert(0,"myBackupFile")
         }
 
         if ($Yesterday) {
             $yd = (Get-Date).AddDays(-1).Date
-            $files = $files | Where-Object {$_.lastwritetime -ge $yd}
+            $files = $files | Where-Object {$_.LastWriteTime -ge $yd}
         }
         if ($Last -gt 0) {
             $files | Sort-Object Created | Select-Object -Last $last
@@ -83,8 +83,8 @@ Source C:\scripts\PSBackup\Get-MyBackupFile.ps1
 } #end Get-MyBackupFile
 
 #define some alias properties for the custom object type
-Update-TypeData -typename "myBackupFile" -MemberType AliasProperty -memberName Size -Value Length -force
-Update-TypeData -typename "myBackupFile" -MemberType AliasProperty -memberName Created -Value CreationTime -force
+Update-TypeData -TypeName "myBackupFile" -MemberType AliasProperty -memberName Size -Value Length -force
+Update-TypeData -TypeName "myBackupFile" -MemberType AliasProperty -memberName Created -Value CreationTime -force
 
 #load the custom format file
 Update-FormatData $PSScriptRoot\mybackupfile.format.ps1xml

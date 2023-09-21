@@ -5,17 +5,17 @@ update backup pending CSV file with updates sizes and dates
 as well as deleting files that have since been deleted
 #>
 
-[cmdletbinding(SupportsShouldProcess)]
+[CmdletBinding(SupportsShouldProcess)]
 
 Param(
     [parameter(position = 0, Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-    [ArgumentCompleter({ $(Get-ChildItem d:\backup\*.csv).fullname })]
+    [ArgumentCompleter({ $(Get-ChildItem d:\backup\*.csv).FullName })]
     [ValidateScript({ Test-Path $_ })]
     [string[]]$Path
 )
 
 Begin {
-    Write-Verbose "Starting $($myinvocation.mycommand)"
+    Write-Verbose "Starting $($MyInvocation.MyCommand)"
 }
 Process {
     Foreach ($item in $Path) {
@@ -48,9 +48,9 @@ Process {
                     }
                 }
                 #Update date
-                if ($now.LastWriteTime -gt [datetime]$_.Date) {
-                    Write-Verbose "Updating $($now.name) date from $($_.Date) to $($now.lastWriteTime)"
-                   # $_ | out-String | write-Verbose
+                if ($now.LastWriteTime -gt [DateTime]$_.Date) {
+                    Write-Verbose "Updating $($now.name) date from $($_.Date) to $($now.LastWriteTime)"
+                   # $_ | Out-String | Write-Verbose
                     $_[0].Date = ("{0:g}" -f $now.LastWriteTime)
                 }
                 $_
@@ -70,7 +70,7 @@ Process {
     } #foreach item
 } #process
 end {
-    Write-Verbose "Ending $($myinvocation.MyCommand)"
+    Write-Verbose "Ending $($MyInvocation.MyCommand)"
 } #end
 
 # New-Item -path 'C:\Program Files\WindowsPowerShell\Scripts\' -name UpdateBackupPending.ps1 -itemtype symbolicLink -value (Convert-Path .\UpdateBackupPending.ps1) -force

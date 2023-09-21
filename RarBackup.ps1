@@ -1,29 +1,29 @@
-﻿#requires -version 5.1
+#requires -version 5.1
 
-[cmdletbinding(SupportsShouldProcess)]
+[CmdletBinding(SupportsShouldProcess)]
 Param(
     [Parameter(Mandatory)]
     [ValidateScript( { Test-Path $_ })]
-    [string]$Path,
+    [String]$Path,
 
     [Parameter(HelpMessage = "The final location for the backup files.")]
     [ValidateScript( { Test-Path $_ })]
-    [string]$Destination = "\\DS416\backup",
+    [String]$Destination = "\\DS416\backup",
 
     [ValidateScript( { Test-Path $_ })]
     #my temporary work area with plenty of free disk space
-    [string]$TempPath = "D:\Temp",
+    [String]$TempPath = "D:\Temp",
 
     [ValidateSet("FULL", "INCREMENTAL")]
-    [string]$Type = "FULL",
+    [String]$Type = "FULL",
 
     [Parameter(HelpMessage = "Specify the path to a text file with a list of paths to exclude from backup")]
     [ValidateScript( { Test-Path $_ })]
-    [string]$ExclusionList = "c:\scripts\PSBackup\Exclude.txt"
+    [String]$ExclusionList = "c:\scripts\PSBackup\Exclude.txt"
 )
 
-Write-Verbose "[$(Get-Date)] Starting $($myinvocation.MyCommand)"
-Write-Host "[$(Get-Date)] Starting $($myinvocation.MyCommand) $Type for $Path" -foreground green
+Write-Verbose "[$(Get-Date)] Starting $($MyInvocation.MyCommand)"
+Write-Host "[$(Get-Date)] Starting $($MyInvocation.MyCommand) $Type for $Path" -foreground green
 
 if (-Not (Get-Module PSRar)) {
     Import-Module C:\scripts\PSBackup\PSRar.psm1 -Force
@@ -50,7 +50,7 @@ if (Test-Path $ExclusionList) {
 
 $rarParams | Out-String | Write-Verbose
 
-if ($pscmdlet.ShouldProcess($Path)) {
+if ($PSCmdlet.ShouldProcess($Path)) {
     #Create the RAR archive -you can use any archiving technique you want
     [void](Add-RARContent @rarParams)
 
@@ -83,7 +83,7 @@ if ($pscmdlet.ShouldProcess($Path)) {
     }
 }
 
-Write-Verbose "[$(Get-Date)] Ending $($myinvocation.MyCommand)"
-Write-Host "[$(Get-Date)] Ending $($myinvocation.MyCommand)" -foreground green
+Write-Verbose "[$(Get-Date)] Ending $($MyInvocation.MyCommand)"
+Write-Host "[$(Get-Date)] Ending $($MyInvocation.MyCommand)" -foreground green
 
 #end of script file

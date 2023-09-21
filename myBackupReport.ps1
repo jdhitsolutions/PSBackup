@@ -3,7 +3,7 @@
 
 #myBackupReport.ps1
 # this script uses Format-Value from the PSScriptTools module.
-[cmdletbinding(DefaultParameterSetName="default")]
+[CmdletBinding(DefaultParameterSetName="default")]
 
 Param(
     [Parameter(Position = 0, HelpMessage = "Enter the path where the backup files are stored.",ParameterSetName="default")]
@@ -12,23 +12,23 @@ Param(
     [ValidateNotNullOrEmpty()]
     [ValidateScript({Test-Path $_ })]
     #This is my NAS device
-    [string]$Path = "\\ds416\backup",
+    [String]$Path = "\\ds416\backup",
 
     [Parameter(HelpMessage = "Only display the summary",ParameterSetName = "sumOnly")]
-    [switch]$SummaryOnly,
+    [Switch]$SummaryOnly,
 
     [Parameter(HelpMessage = "Get backup files only with no formatted summary.",ParameterSetName = "raw")]
     [Switch]$Raw,
     [Parameter(HelpMessage = "Get the last X number of raw files", ParameterSetName = "raw")]
-    [int]$Last
+    [Int]$Last
 )
 
 $reportVer = "1.3.0"
 
 #convert path to a full filesystem path
 $Path = Convert-Path $path
-Write-Verbose "Starting $($myinvocation.mycommand) v.$ReportVer"
-Write-Verbose "Using parameter set $($pscmdlet.ParameterSetName)"
+Write-Verbose "Starting $($MyInvocation.MyCommand) v.$ReportVer"
+Write-Verbose "Using parameter set $($PSCmdlet.ParameterSetName)"
 
 <#
  A regular expression pattern to match on backup file name with named captures
@@ -66,7 +66,7 @@ foreach ($item in $files) {
 
 if ($raw -AND $last) {
     Write-Verbose "Getting last $last raw files"
-    $Files | Sort-Object -Property LastWriteTime | Select-object -last $last
+    $Files | Sort-Object -Property LastWriteTime | Select-Object -last $last
 }
 elseif ($raw) {
      Write-Verbose "Getting all raw files"
@@ -75,7 +75,7 @@ elseif ($raw) {
 else {
     Write-Verbose "Preparing report data"
     Write-Host "$([char]0x1b)[1;4;38;5;216m`nMy Backup Report - $Path`n$([char]0x1b)[0m"
-    if ($pscmdlet.ParameterSetName -eq 'default') {
+    if ($PSCmdlet.ParameterSetName -eq 'default') {
     $files | Sort-Object SetPath, SetType, LastWriteTime |
         Format-Table -GroupBy SetPath -Property @{Name = "Created"; Expression = { $_.LastWriteTime } },
         @{Name = "SizeMB"; Expression = {
@@ -92,7 +92,7 @@ else {
         }
 $grouped = $files | Group-Object -property SetPath
 $summary = foreach ($item in $grouped) {
-    [pscustomobject]@{
+    [PSCustomObject]@{
         BackupSet = $item.name
         Files     = $item.Count
         SizeMB    = ($item.group | Measure-Object -Property Length -sum -outvariable m).sum | Format-Value -unit MB -Decimal 2
@@ -112,6 +112,6 @@ Write-Host "Path: $Path" -ForegroundColor Yellow
 ($total | Format-Table | Out-String).TrimEnd() | Write-Host -ForegroundColor yellow
 }
 
-if ($pscmdlet.ParameterSetName -ne 'raw') {
+if ($PSCmdlet.ParameterSetName -ne 'raw') {
     Write-Host "$([char]0x1b)[38;5;216m`nReport version $reportver$([char]0x1b)[0m"
 }

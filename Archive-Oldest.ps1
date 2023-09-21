@@ -6,13 +6,13 @@ run this every quarter to rename a file like 20201023_Training-FULL.rar
 to ARCHIVE_Training.rar
 #>
 
-[cmdletbinding(SupportsShouldProcess)]
+[CmdletBinding(SupportsShouldProcess)]
 Param(
     [Parameter(Position = 0, HelpMessage = "Specify the backup path")]
     [ValidateScript({Test-Path $_})]
-    [string]$Path = "\\ds416\backup",
+    [String]$Path = "\\ds416\backup",
     [Parameter(HelpMessage = "Specify the filename prefix")]
-    [string]$Prefix = "ARCHIVE"
+    [String]$Prefix = "ARCHIVE"
 )
 
 #parse out backup set

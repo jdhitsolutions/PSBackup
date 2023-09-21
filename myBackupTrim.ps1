@@ -4,20 +4,20 @@
 
 #trim full backups to the last X number of files
 
-[cmdletbinding(SupportsShouldProcess)]
+[CmdletBinding(SupportsShouldProcess)]
 Param(
     [Parameter(Position = 0, HelpMessage = "Specify the backup folder location")]
     [ValidateNotNullOrEmpty()]
     [ValidateScript( { Test-Path $_ })]
-    [string]$Path = "\\ds416\backup",
+    [String]$Path = "\\ds416\backup",
 
     [Parameter(HelpMessage = "Specify a file pattern")]
     [ValidateNotNullOrEmpty()]
-    [string]$Pattern = "*-FULL.rar",
+    [String]$Pattern = "*-FULL.rar",
 
     [Parameter(HelpMessage = "Specify the number of the most recent files to keep")]
-    [Validatescript({ $_ -ge 1 })]
-    [int]$Count = 4
+    [ValidateScript({ $_ -ge 1 })]
+    [Int]$Count = 4
 )
 
 $find = Join-Path -Path $path -ChildPath $pattern

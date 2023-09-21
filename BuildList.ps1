@@ -1,15 +1,15 @@
 #build the full backup list
 
-[cmdletbinding()]
+[CmdletBinding()]
 Param(
     [Parameter(Position = 0, HelpMessage = "Path to a text file with folders to backup.")]
     [ValidateNotNullOrEmpty()]
     [ValidateScript( { Test-Path $_ })]
-    [string]$PathList = "c:\scripts\PSBackup\mybackupPaths.txt",
+    [String]$PathList = "c:\scripts\PSBackup\mybackupPaths.txt",
 
     [Parameter(Position = 1, HelpMessage = "The destination folder for the backup files")]
     [ValidateNotNullOrEmpty()]
-    [string]$Destination = "\\ds416\backup"
+    [String]$Destination = "\\ds416\backup"
 )
 
 #regex to match on set name from RAR file
@@ -24,7 +24,7 @@ Write-Verbose "Found incremental backups for $($sets -join ',') "
 
 Write-Verbose "Checking pending backups"
 
-$csv = Get-ChildItem D:\Backup\*.csv | foreach-object { $_.BaseName.split("-")[0]}
+$csv = Get-ChildItem D:\Backup\*.csv | ForEach-Object { $_.BaseName.split("-")[0]}
 foreach ($item in $csv) {
     if ($sets -notcontains $item) {
         Write-Verbose "Adding $item to backup set"
@@ -34,7 +34,7 @@ foreach ($item in $csv) {
 
 #build the list
 foreach ($set in $sets) {
-    write-Verbose "Searching for $set path"
+    Write-Verbose "Searching for $set path"
     #match on the first 4 characters of the set name
     $mtch = $set.substring(0,4)
     $Path = (Get-Content C:\scripts\psbackup\myBackupPaths.txt | Select-String $mtch).line

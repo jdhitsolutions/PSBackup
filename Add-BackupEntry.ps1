@@ -15,25 +15,25 @@ LastUpdate 1/24/2021 4:29 PM
 Source C:\scripts\PSBackup\Add-BackupEntry.ps1
 
 #>
-    [cmdletbinding(SupportsShouldProcess)]
+    [CmdletBinding(SupportsShouldProcess)]
     [Alias("abe")]
-    [outputtype("none")]
+    [OutputType("none")]
     Param(
         [Parameter(Position = 1, Mandatory, ValueFromPipeline)]
         [ValidateScript({Test-Path $_})]
-        [string]$Path,
+        [String]$Path,
 
         [Parameter(Position = 0,Mandatory)]
         #I'm using a dynamic argument completer instead of the old validate set
         #[ValidateSet("Scripts","Dropbox","Documents","GoogleDrive","jdhit")]
-        [ArgumentCompleter({(Get-Childitem D:\backup\*.csv).name.foreach({($_ -split "-")[0]})})]
+        [ArgumentCompleter({(Get-ChildItem D:\backup\*.csv).name.foreach({($_ -split "-")[0]})})]
         [alias("set")]
         [ValidateNotNullOrEmpty()]
-        [string]$BackupSet
+        [String]$BackupSet
     )
 
     Begin {
-        Write-Verbose "[BEGIN  ] Starting: $($MyInvocation.Mycommand)"
+        Write-Verbose "[BEGIN  ] Starting: $($MyInvocation.MyCommand)"
         $csvFile = "D:\Backup\$BackupSet-log.csv"
         $add = @()
     } #begin
@@ -47,10 +47,10 @@ Source C:\scripts\PSBackup\Add-BackupEntry.ps1
         if ($BackupSet -eq 'GoogleDrive') {
             $BackupSet = "Google Drive"
         }
-        $add += [pscustomobject]@{
+        $add += [PSCustomObject]@{
             ID        = 99999
             Date      = $file.LastWriteTime
-            Name      = ($file.fullname -split "$BackupSet\\")[1]
+            Name      = ($file.FullName -split "$BackupSet\\")[1]
             IsFolder  = "False"
             Directory = $file.DirectoryName
             Size      = $file.length
@@ -63,7 +63,7 @@ Source C:\scripts\PSBackup\Add-BackupEntry.ps1
             $add | Out-String | Write-Verbose
             $add | Export-Csv -Path $CSVFile -Append -NoTypeInformation
         }
-        Write-Verbose "[END    ] Ending: $($MyInvocation.Mycommand)"
+        Write-Verbose "[END    ] Ending: $($MyInvocation.MyCommand)"
     } #end
 }
 

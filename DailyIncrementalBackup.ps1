@@ -1,4 +1,4 @@
-﻿#requires -version 5.1
+#requires -version 5.1
 #requires -module BurntToast,PSScriptTools
 
 #backup files from CSV change logs
@@ -12,11 +12,11 @@ foreach ($name in (Import-CSV D:\Backup\Scripts-log.csv -OutVariable in | Select
 }
 #>
 
-[cmdletbinding(SupportsShouldProcess)]
+[CmdletBinding(SupportsShouldProcess)]
 Param(
     [Parameter(HelpMessage = "Specify the location of the CSV files with incremental backup changes.")]
     [ValidateScript({Test-Path $_})]
-    [string]$BackupPath = "D:\Backup"
+    [String]$BackupPath = "D:\Backup"
 )
 #create a transcript log file
 $log = New-CustomFileName -Template "DailyIncremental_%year%month%day%hour%minute.txt"
@@ -37,7 +37,7 @@ Catch {
 }
 
 #get the CSV files
-$paths = (Get-ChildItem -Path "$BackupPath\*.csv").Fullname
+$paths = (Get-ChildItem -Path "$BackupPath\*.csv").FullName
 
 foreach ($path in $paths) {
 
@@ -69,7 +69,7 @@ foreach ($path in $paths) {
         Write-Host "[$(Get-Date)] Copying $($file.name) to $relpath" -ForegroundColor green
         $f = Copy-Item -Path $file.Name -Destination $relpath -Force -PassThru
         #copy attributes
-        if ($pscmdlet.ShouldProcess($f.name,"Copy Attributes")) {
+        if ($PSCmdlet.ShouldProcess($f.name,"Copy Attributes")) {
             $f.Attributes = (Get-Item $file.name -Force).Attributes
         }
     } #foreach file
@@ -86,12 +86,12 @@ foreach ($path in $paths) {
 
     Add-RARContent -Object $tmpParent -Archive $archive -CompressionLevel 5 -Comment "Incremental backup $(Get-Date)" -excludeFile C:\scripts\PSBackup\exclude.txt -verbose
     Write-Host "[$(Get-Date)] Moving $archive to NAS" -fore green
-    if ($pscmdlet.ShouldProcess($archive,"Move file")) {
+    if ($PSCmdlet.ShouldProcess($archive,"Move file")) {
         Move-Item -Path $archive -Destination \\ds416\backup -Force
     }
 
     Write-Host "[$(Get-Date)] Removing $path" -fore yellow
-    if ($pscmdlet.ShouldProcess($path,"Remove file")) {
+    if ($PSCmdlet.ShouldProcess($path,"Remove file")) {
         Remove-Item $path
     }
 
@@ -109,7 +109,7 @@ Created $($newfiles.count) files.
 View log at $logpath
 "@
 
-#$newfiles | Foreach-Object { $btText+= "$($_.name)`n"}
+#$newfiles | ForEach-Object { $btText+= "$($_.name)`n"}
 
 $params = @{
     Text    = $btText
@@ -117,7 +117,7 @@ $params = @{
     Applogo = "c:\scripts\db.png"
 }
 
-if ($pscmdlet.shouldProcess($logpath,"Send Toast Notification")) {
+if ($PSCmdlet.ShouldProcess($logpath,"Send Toast Notification")) {
     New-BurntToastNotification @params
 }
 
