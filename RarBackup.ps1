@@ -8,7 +8,7 @@ Param(
 
     [Parameter(HelpMessage = "The final location for the backup files.")]
     [ValidateScript( { Test-Path $_ })]
-    [String]$Destination = "\\DS416\backup",
+    [String]$Destination = "\\DSTulipwood\backup",
 
     [ValidateScript( { Test-Path $_ })]
     #my temporary work area with plenty of free disk space

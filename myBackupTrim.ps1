@@ -9,7 +9,7 @@ Param(
     [Parameter(Position = 0, HelpMessage = "Specify the backup folder location")]
     [ValidateNotNullOrEmpty()]
     [ValidateScript( { Test-Path $_ })]
-    [String]$Path = "\\ds416\backup",
+    [String]$Path = "\\DSTulipwood\backup",
 
     [Parameter(HelpMessage = "Specify a file pattern")]
     [ValidateNotNullOrEmpty()]

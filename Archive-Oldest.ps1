@@ -10,7 +10,7 @@ to ARCHIVE_Training.rar
 Param(
     [Parameter(Position = 0, HelpMessage = "Specify the backup path")]
     [ValidateScript({Test-Path $_})]
-    [String]$Path = "\\ds416\backup",
+    [String]$Path = "\\DSTulipwood\backup",
     [Parameter(HelpMessage = "Specify the filename prefix")]
     [String]$Prefix = "ARCHIVE"
 )

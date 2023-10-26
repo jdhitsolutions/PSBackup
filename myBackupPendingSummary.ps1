@@ -28,7 +28,7 @@ $f = Get-ChildItem -Path $csv | ForEach-Object {
 Write-Verbose "Found $($in.count) files to import"
 Write-Verbose "Getting unique file names from $($f.count) files"
 $files = ($f.name | Select-Object -Unique).Foreach( { $n = $_; $f.where( { $_.name -eq $n }) |
-        Sort-Object -Property { $_.date -as [DateTime] } | Select-Object -Last 1 })
+    Sort-Object -Property { $_.date -as [DateTime] } | Select-Object -Last 1 })
 
 Write-Verbose "Found $($files.count) unique files"
 

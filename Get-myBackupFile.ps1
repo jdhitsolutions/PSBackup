@@ -23,7 +23,7 @@ Source C:\scripts\PSBackup\Get-MyBackupFile.ps1
         [ValidateNotNullOrEmpty()]
         [ValidateScript( { Test-Path $_ })]
         #This is my NAS device
-        [String]$Path = "\\ds416\backup",
+        [String]$Path = "\\DSTulipwood\backup",
         [Parameter(HelpMessage = "Get only Incremental backup files")]
         [Switch]$IncrementalOnly,
         [Parameter(HelpMessage = "Get the last X number of raw files")]

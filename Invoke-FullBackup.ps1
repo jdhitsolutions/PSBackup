@@ -14,7 +14,7 @@ Param(
 
     [Parameter(Position = 0, HelpMessage = "The destination folder for the backup files")]
     [ValidateNotNullOrEmpty()]
-    [String]$Destination = "\\ds416\backup"
+    [String]$Destination = "\\DSTulipwood\backup"
 )
 
 <#

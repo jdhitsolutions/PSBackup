@@ -12,7 +12,7 @@ Param(
 
     [Parameter(Position = 1, HelpMessage = "The destination folder for the backup files")]
     [ValidateNotNullOrEmpty()]
-    [String]$Destination = "\\ds416\backup"
+    [String]$Destination = "\\DSTulipwood\backup"
 )
 
 $sets = C:\scripts\PSBackup\BuildList.ps1 -PathList $PathList -Destination $Destination

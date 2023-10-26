@@ -12,7 +12,7 @@ Param(
     [ValidateNotNullOrEmpty()]
     [ValidateScript({Test-Path $_ })]
     #This is my NAS device
-    [String]$Path = "\\ds416\backup",
+    [String]$Path = "\\DSTulipwood\backup",
 
     [Parameter(HelpMessage = "Only display the summary",ParameterSetName = "sumOnly")]
     [Switch]$SummaryOnly,
@@ -23,7 +23,7 @@ Param(
     [Int]$Last
 )
 
-$reportVer = "1.3.0"
+$reportVer = "1.3.1"
 
 #convert path to a full filesystem path
 $Path = Convert-Path $path
@@ -56,12 +56,12 @@ if ($files.count -eq 0) {
 Write-Verbose "Found $($files.count) files in $Path"
 
 foreach ($item in $files) {
-    $setpath = $rx.matches($item.name).groups[4].value
-    $settype = $rx.matches($item.name).groups[5].value
+    $SetPath = $rx.matches($item.name).groups[4].value
+    $SetType = $rx.matches($item.name).groups[5].value
 
     #add some custom properties to be used with formatted results based on named captures
-    $item | Add-Member -MemberType NoteProperty -Name SetPath -Value $setpath
-    $item | Add-Member -MemberType NoteProperty -Name SetType -Value $setType
+    $item | Add-Member -MemberType NoteProperty -Name SetPath -Value $SetPath
+    $item | Add-Member -MemberType NoteProperty -Name SetType -Value $SetType
 }
 
 if ($raw -AND $last) {
@@ -69,7 +69,7 @@ if ($raw -AND $last) {
     $Files | Sort-Object -Property LastWriteTime | Select-Object -last $last
 }
 elseif ($raw) {
-     Write-Verbose "Getting all raw files"
+    Write-Verbose "Getting all raw files"
     $Files | Sort-Object -Property LastWriteTime
 }
 else {

@@ -87,7 +87,7 @@ foreach ($path in $paths) {
     Add-RARContent -Object $tmpParent -Archive $archive -CompressionLevel 5 -Comment "Incremental backup $(Get-Date)" -excludeFile C:\scripts\PSBackup\exclude.txt -verbose
     Write-Host "[$(Get-Date)] Moving $archive to NAS" -fore green
     if ($PSCmdlet.ShouldProcess($archive,"Move file")) {
-        Move-Item -Path $archive -Destination \\ds416\backup -Force
+        Move-Item -Path $archive -Destination \\DSTulipwood\backup -Force
     }
 
     Write-Host "[$(Get-Date)] Removing $path" -fore yellow
@@ -100,7 +100,7 @@ foreach ($path in $paths) {
 Write-Host "[$(Get-Date)] Removing temporary Backup folders" -fore yellow
 Get-ChildItem -Path D:\BackTemp -Directory | Remove-Item -Force -Recurse
 
-$newFiles = Get-ChildItem -Path \\ds416\backup\*incremental.rar | Where-Object LastWriteTime -GE (Get-Date).Date
+$newFiles = Get-ChildItem -Path \\DSTulipwood\backup\*incremental.rar | Where-Object LastWriteTime -GE (Get-Date).Date
 #send a toast notification
 $btText = @"
 Backup Task Complete
