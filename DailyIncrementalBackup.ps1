@@ -20,9 +20,9 @@ Param(
 )
 #create a transcript log file
 $log = New-CustomFileName -Template "DailyIncremental_%year%month%day%hour%minute.txt"
-$logpath = Join-Path -Path D:\temp -ChildPath $log
+$LogPath = Join-Path -Path D:\temp -ChildPath $log
 $codeDir = "C:\scripts\PSBackup"
-Start-Transcript -Path $logpath
+Start-Transcript -Path $LogPath
 
 Write-Host "[$(Get-Date)] Starting Daily Incremental" -ForegroundColor Cyan
 
@@ -44,30 +44,30 @@ foreach ($path in $paths) {
     $name = (Split-Path -Path $Path -Leaf).split("-")[0]
     $files = Import-Csv -Path $path |
         Where-Object { ($_.name -notmatch "~|\.tmp") -AND ($_.size -gt 0) -AND ($_.IsFolder -eq 'False') -AND (Test-Path $_.path) } |
-        Select-Object -Property path, size, directory, isfolder, ID | Group-Object -Property Path
+        Select-Object -Property path, size, directory, IsFolder, ID | Group-Object -Property Path
 
-    $tmpParent = Join-Path -path D:\backtemp -ChildPath $name
+    $tmpParent = Join-Path -path D:\BackTemp -ChildPath $name
 
     foreach ($file in $files) {
-        $parentFolder = $file.group[0].directory
+        $ParentFolder = $file.group[0].directory
         #Create a temporary folder for backing up the day's files
-        $relPath = Join-Path -Path $tmpParent -ChildPath $parentFolder.Substring(3)
+        $RelPath = Join-Path -Path $tmpParent -ChildPath $ParentFolder.Substring(3)
 
-        if (-Not (Test-Path -Path $relpath)) {
-            Write-Host "[$(Get-Date)] Creating $relpath" -ForegroundColor cyan
-            $new = New-Item -Path $relpath -ItemType directory -Force
+        if (-Not (Test-Path -Path $RelPath)) {
+            Write-Host "[$(Get-Date)] Creating $RelPath" -ForegroundColor cyan
+            $new = New-Item -Path $RelPath -ItemType directory -Force
             Start-Sleep -Milliseconds 100
 
             #copy hidden attributes
-            $attrib = (Get-Item $parentfolder -Force).Attributes
+            $attrib = (Get-Item $ParentFolder -Force).Attributes
             if ($attrib -match "hidden") {
-                Write-Host "[$(Get-Date)] Copying attributes from $parentfolder to $($new.FullName)" -ForegroundColor yellow
+                Write-Host "[$(Get-Date)] Copying attributes from $ParentFolder to $($new.FullName)" -ForegroundColor yellow
                 Write-Host $attrib -ForegroundColor yellow
                 (Get-Item $new.FullName -Force).Attributes = $attrib
             }
         }
-        Write-Host "[$(Get-Date)] Copying $($file.name) to $relpath" -ForegroundColor green
-        $f = Copy-Item -Path $file.Name -Destination $relpath -Force -PassThru
+        Write-Host "[$(Get-Date)] Copying $($file.name) to $RelPath" -ForegroundColor green
+        $f = Copy-Item -Path $file.Name -Destination $RelPath -Force -PassThru
         #copy attributes
         if ($PSCmdlet.ShouldProcess($f.name,"Copy Attributes")) {
             $f.Attributes = (Get-Item $file.name -Force).Attributes
@@ -81,18 +81,23 @@ foreach ($path in $paths) {
     Write-Host "[$(Get-Date)] Creating $archive from $tmpParent" -fore green
     Write-Host "[$(Get-Date)] $($stats.count) files totaling $($stats.sum)" -fore green
 
-    #uncommment for debugging
+    # for debugging
     #Pause
 
     Add-RARContent -Object $tmpParent -Archive $archive -CompressionLevel 5 -Comment "Incremental backup $(Get-Date)" -excludeFile C:\scripts\PSBackup\exclude.txt -verbose
     Write-Host "[$(Get-Date)] Moving $archive to NAS" -fore green
     if ($PSCmdlet.ShouldProcess($archive,"Move file")) {
-        Move-Item -Path $archive -Destination \\DSTulipwood\backup -Force
-    }
-
-    Write-Host "[$(Get-Date)] Removing $path" -fore yellow
-    if ($PSCmdlet.ShouldProcess($path,"Remove file")) {
-        Remove-Item $path
+        Try {
+            Move-Item -Path $archive -Destination \\DSTulipwood\backup -Force -ErrorAction Stop
+            #only remove the file if it was successfully moved to the NAS
+            Write-Host "[$(Get-Date)] Removing $path" -fore yellow
+            if ($PSCmdlet.ShouldProcess($path,"Remove file")) {
+                Remove-Item $path
+            }
+        }
+        Catch {
+            Write-Warning "Failed to move $archive to \\DSTulipwood\Backup. $($_.Exception.Message)"
+        }
     }
 
 } #foreach path
@@ -100,24 +105,24 @@ foreach ($path in $paths) {
 Write-Host "[$(Get-Date)] Removing temporary Backup folders" -fore yellow
 Get-ChildItem -Path D:\BackTemp -Directory | Remove-Item -Force -Recurse
 
-$newFiles = Get-ChildItem -Path \\DSTulipwood\backup\*incremental.rar | Where-Object LastWriteTime -GE (Get-Date).Date
+$NewFiles = Get-ChildItem -Path \\DSTulipwood\backup\*incremental.rar | Where-Object LastWriteTime -GE (Get-Date).Date
 #send a toast notification
 $btText = @"
 Backup Task Complete
 
-Created $($newfiles.count) files.
-View log at $logpath
+Created $($NewFiles.count) files.
+View log at $LogPath
 "@
 
-#$newfiles | ForEach-Object { $btText+= "$($_.name)`n"}
+#$NewFiles | ForEach-Object { $btText+= "$($_.name)`n"}
 
 $params = @{
     Text    = $btText
     Header  = $(New-BTHeader -Id 1 -Title "Daily Incremental Backup")
-    Applogo = "c:\scripts\db.png"
+    AppLogo = "c:\scripts\db.png"
 }
 
-if ($PSCmdlet.ShouldProcess($logpath,"Send Toast Notification")) {
+if ($PSCmdlet.ShouldProcess($LogPath,"Send Toast Notification")) {
     New-BurntToastNotification @params
 }
 
