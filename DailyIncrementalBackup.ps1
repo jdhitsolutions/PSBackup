@@ -8,21 +8,25 @@
 this is another way to get last version of each file instead of using Group-Object
 
 foreach ($name in (Import-CSV D:\Backup\Scripts-log.csv -OutVariable in | Select-Object Name -Unique).name) {
- $in | where {$_.name -EQ $name} | sort-object -Property ID | Select-Object -last 1
+$in | where {$_.name -EQ $name} | sort-object -Property ID | Select-Object -last 1
 }
 #>
 
 [CmdletBinding(SupportsShouldProcess)]
 Param(
-    [Parameter(HelpMessage = "Specify the location of the CSV files with incremental backup changes.")]
-    [ValidateScript({Test-Path $_})]
-    [String]$BackupPath = "D:\Backup"
+    [Parameter(HelpMessage = 'Specify the location of the CSV files with incremental backup changes.')]
+    [ValidateScript({ Test-Path $_ })]
+    [String]$BackupPath = 'D:\Backup'
 )
 #create a transcript log file
-$log = New-CustomFileName -Template "DailyIncremental_%year%month%day%hour%minute.txt"
-$LogPath = Join-Path -Path D:\temp -ChildPath $log
-$codeDir = "C:\scripts\PSBackup"
+$log = New-CustomFileName -Template 'DailyIncremental_%year%month%day%hour%minute.txt'
+#11/6/2023 Changed Backup log path so the files don't get removed on reboot
+$LogPath = Join-Path -Path D:\backupLogs -ChildPath $log
+$codeDir = 'C:\scripts\PSBackup'
 Start-Transcript -Path $LogPath
+
+#refresh NAS Credential
+cmdkey /add:DSTulipwood /user:Jeff /pass:(Get-Content C:\scripts\tulipwood.txt | Unprotect-CmsMessage)
 
 Write-Host "[$(Get-Date)] Starting Daily Incremental" -ForegroundColor Cyan
 
@@ -40,13 +44,12 @@ Catch {
 $paths = (Get-ChildItem -Path "$BackupPath\*.csv").FullName
 
 foreach ($path in $paths) {
-
-    $name = (Split-Path -Path $Path -Leaf).split("-")[0]
+    $name = (Split-Path -Path $Path -Leaf).split('-')[0]
     $files = Import-Csv -Path $path |
-        Where-Object { ($_.name -notmatch "~|\.tmp") -AND ($_.size -gt 0) -AND ($_.IsFolder -eq 'False') -AND (Test-Path $_.path) } |
-        Select-Object -Property path, size, directory, IsFolder, ID | Group-Object -Property Path
+    Where-Object { ($_.name -notmatch '~|\.tmp') -AND ($_.size -gt 0) -AND ($_.IsFolder -eq 'False') -AND (Test-Path $_.path) } |
+    Select-Object -Property path, size, directory, IsFolder, ID | Group-Object -Property Path
 
-    $tmpParent = Join-Path -path D:\BackTemp -ChildPath $name
+    $tmpParent = Join-Path -Path D:\BackTemp -ChildPath $name
 
     foreach ($file in $files) {
         $ParentFolder = $file.group[0].directory
@@ -60,7 +63,7 @@ foreach ($path in $paths) {
 
             #copy hidden attributes
             $attrib = (Get-Item $ParentFolder -Force).Attributes
-            if ($attrib -match "hidden") {
+            if ($attrib -match 'hidden') {
                 Write-Host "[$(Get-Date)] Copying attributes from $ParentFolder to $($new.FullName)" -ForegroundColor yellow
                 Write-Host $attrib -ForegroundColor yellow
                 (Get-Item $new.FullName -Force).Attributes = $attrib
@@ -69,7 +72,7 @@ foreach ($path in $paths) {
         Write-Host "[$(Get-Date)] Copying $($file.name) to $RelPath" -ForegroundColor green
         $f = Copy-Item -Path $file.Name -Destination $RelPath -Force -PassThru
         #copy attributes
-        if ($PSCmdlet.ShouldProcess($f.name,"Copy Attributes")) {
+        if ($PSCmdlet.ShouldProcess($f.name, 'Copy Attributes')) {
             $f.Attributes = (Get-Item $file.name -Force).Attributes
         }
     } #foreach file
@@ -77,28 +80,43 @@ foreach ($path in $paths) {
     #create a RAR archive or substitute your archiving code
     $archive = Join-Path -Path D:\BackTemp -ChildPath "$(Get-Date -Format yyyyMMdd)_$name-INCREMENTAL.rar"
     #get some stats about the data to be archived
-    $stats = Get-ChildItem -path $tmpParent -file -Recurse | Measure-Object -Property length -sum
+    $stats = Get-ChildItem -Path $tmpParent -File -Recurse | Measure-Object -Property length -Sum
     Write-Host "[$(Get-Date)] Creating $archive from $tmpParent" -fore green
     Write-Host "[$(Get-Date)] $($stats.count) files totaling $($stats.sum)" -fore green
 
     # for debugging
     #Pause
 
-    Add-RARContent -Object $tmpParent -Archive $archive -CompressionLevel 5 -Comment "Incremental backup $(Get-Date)" -excludeFile C:\scripts\PSBackup\exclude.txt -verbose
+    $addParams = @{
+        Object      = $tmpParent
+        Archive     = $archive
+        Comment     = "Incremental backup $(Get-Date)"
+        excludeFile = 'C:\scripts\PSBackup\exclude.txt'
+        verbose     = $True
+    }
+    Add-RARContent @addParams
+
     Write-Host "[$(Get-Date)] Moving $archive to NAS" -fore green
-    if ($PSCmdlet.ShouldProcess($archive,"Move file")) {
-        Try {
-            Move-Item -Path $archive -Destination \\DSTulipwood\backup -Force -ErrorAction Stop
-            #only remove the file if it was successfully moved to the NAS
-            Write-Host "[$(Get-Date)] Removing $path" -fore yellow
-            if ($PSCmdlet.ShouldProcess($path,"Remove file")) {
-                Remove-Item $path
+    if ($PSCmdlet.ShouldProcess($archive, 'Move file')) {
+        if (Test-Path \\DSTulipwood\backup) {
+            Try {
+                Move-Item -Path $archive -Destination \\DSTulipwood\backup -Force -ErrorAction Stop
+                #only remove the file if it was successfully moved to the NAS
+                Write-Host "[$(Get-Date)] Removing $path" -fore yellow
+                if ($PSCmdlet.ShouldProcess($path, 'Remove file')) {
+                    Remove-Item $path
+                }
+            }
+            Catch {
+                Write-Warning "Failed to move $archive to \\DSTulipwood\Backup. $($_.Exception.Message)"
             }
         }
-        Catch {
-            Write-Warning "Failed to move $archive to \\DSTulipwood\Backup. $($_.Exception.Message)"
+        else {
+            #failed to connect to NAS
+            Write-Host "[$(Get-Date)] Failed to verify \\DSTulipwood\Backup" -fore red
+            Write-Verbose 'Failed to verify \\DSTulipwood\Backup'
         }
-    }
+    } #whatIf
 
 } #foreach path
 
@@ -118,11 +136,11 @@ View log at $LogPath
 
 $params = @{
     Text    = $btText
-    Header  = $(New-BTHeader -Id 1 -Title "Daily Incremental Backup")
-    AppLogo = "c:\scripts\db.png"
+    Header  = $(New-BTHeader -Id 1 -Title 'Daily Incremental Backup')
+    AppLogo = 'c:\scripts\db.png'
 }
 
-if ($PSCmdlet.ShouldProcess($LogPath,"Send Toast Notification")) {
+if ($PSCmdlet.ShouldProcess($LogPath, 'Send Toast Notification')) {
     New-BurntToastNotification @params
 }
 

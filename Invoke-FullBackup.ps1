@@ -23,8 +23,12 @@ run this as a scheduled job, there is no $PSScriptRoot or $MyInvocation
 #>
 #create a transcript log file
 $log = New-CustomFileName -Template "WeeklyFull_%year%month%day%hour%minute%seconds-%###.txt"
-$LogPath = Join-Path -Path D:\temp -ChildPath $log
+#11/6/2023 Changed Backup log path so the files don't get removed on reboot
+$LogPath = Join-Path -Path D:\backupLogs -ChildPath $log
 Start-Transcript -Path $LogPath
+
+#refresh NAS Credential
+cmdkey /add:DSTulipwood /user:Jeff /pass:(get-content C:\scripts\tulipwood.txt | Unprotect-CmsMessage)
 
 $codeDir = "C:\scripts\PSBackup"
 
