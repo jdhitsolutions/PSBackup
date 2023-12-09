@@ -26,7 +26,7 @@ Write-Verbose "Checking pending backups"
 
 $csv = Get-ChildItem D:\Backup\*.csv | ForEach-Object { $_.BaseName.split("-")[0]}
 foreach ($item in $csv) {
-    if ($sets -notcontains $item) {
+    if ($sets -NotContains $item) {
         Write-Verbose "Adding $item to backup set"
         $sets+=$item
     }

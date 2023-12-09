@@ -2,14 +2,14 @@ Function Get-MyBackupFile {
 
 <# PSFunctionInfo
 
-Version 1.0.0
+Version 1.1.0
 Author Jeffery Hicks
 CompanyName JDH IT Solutions, Inc.
-Copyright (c) 2021 JDH IT Solutions, Inc.
+Copyright (c) 2021-2023 JDH IT Solutions, Inc.
 Description Get my backup files.
 Guid 74dc584d-a1e1-43e5-a5c9-b494d1971f8d
 Tags profile,backup
-LastUpdate 1/19/2021 3:14 PM
+LastUpdate 11/8/2023 8:38 AM
 Source C:\scripts\PSBackup\Get-MyBackupFile.ps1
 
 #>
@@ -61,11 +61,11 @@ Source C:\scripts\PSBackup\Get-MyBackupFile.ps1
         Write-Verbose "Found $($files.count) matching files in $Path"
         foreach ($item in $files) {
             $BackupSet = $rx.matches($item.name).groups[4].value
-            $settype = $rx.matches($item.name).groups[5].value
+            $SetType = $rx.matches($item.name).groups[5].value
 
             #add some custom properties to be used with formatted results based on named captures
             $item | Add-Member -MemberType NoteProperty -Name BackupSet -Value $BackupSet -force
-            $item | Add-Member -MemberType NoteProperty -Name SetType -Value $setType -force
+            $item | Add-Member -MemberType NoteProperty -Name SetType -Value $SetType -force
             #insert a custom type name
             $item.PSObject.TypeNames.Insert(0,"myBackupFile")
         }

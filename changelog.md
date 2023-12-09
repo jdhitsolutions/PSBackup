@@ -4,7 +4,12 @@
 
 - Revise as a PowerShell module
 
-## November 7, 2022
+## December 9, 2023
+
+- Modified `WeeklyFullBackup` to test if there is a backup set.
+- Code cleanup
+-
+## November 7, 2023
 
 - Code cleanup
 - Modified NAS references to point to new location

@@ -6,7 +6,7 @@ Param()
 
 Write-Verbose "Starting $($MyInvocation.MyCommand)"
 #verify the scheduled task exists and bail out if it doesn't.
-$name = "DailyWatcher"
+$name = 'DailyWatcher'
 
 Try {
     Write-Verbose "Getting scheduled task $Name"
@@ -22,17 +22,17 @@ catch {
 #if by chance the task is not running, go ahead and start it.
 if ($task.State -ne 'running') {
     Write-Verbose "Starting scheduled task $Name"
-    if ($PSCmdlet.ShouldProcess($Name, "Start-ScheduledTask")) {
+    if ($PSCmdlet.ShouldProcess($Name, 'Start-ScheduledTask')) {
 
         $task | Start-ScheduledTask
 
         #send a toast notification
         $params = @{
-            Text    = "Starting scheduled task $($task.taskname)"
-            Header  = $(New-BTHeader -Id 1 -Title "Daily Watcher")
-            Applogo = "c:\scripts\db.png"
+            Text    = "Starting scheduled task $($task.TaskName)"
+            Header  = $(New-BTHeader -Id 1 -Title 'Daily Watcher')
+            AppLogo = 'c:\scripts\db.png'
         }
-        Write-Verbose "Sending Burnt Toast notification"
+        Write-Verbose 'Sending Burnt Toast notification'
         New-BurntToastNotification @params
 
     } #if should process
@@ -40,9 +40,9 @@ if ($task.State -ne 'running') {
 
 #register an event subscriber if one doesn't already exist
 Try {
-    Write-Verbose "Testing for an existing event subscriber"
+    Write-Verbose 'Testing for an existing event subscriber'
     Get-EventSubscriber -SourceIdentifier TaskChange -ErrorAction Stop
-    Write-Verbose "An event subscriber has been detected. No further action is required."
+    Write-Verbose 'An event subscriber has been detected. No further action is required.'
 }
 Catch {
 
@@ -50,7 +50,7 @@ Catch {
     the scheduled task object is of this CIM type
     Microsoft.Management.Infrastructure.CimInstance#Root/Microsoft/Windows/TaskScheduler/MSFT_ScheduledTask
     #>
-    Write-Verbose "Registering a new CimIndicationEvent"
+    Write-Verbose 'Registering a new CimIndicationEvent'
 
     $query = "Select * from __InstanceModificationEvent WITHIN 10 WHERE TargetInstance ISA 'MSFT_ScheduledTask' AND TargetInstance.TaskName='$Name'"
     $NS = 'Root\Microsoft\Windows\TaskScheduler'
@@ -66,7 +66,7 @@ Catch {
     }
 
     $regParams = @{
-        SourceIdentifier = "TaskChange"
+        SourceIdentifier = 'TaskChange'
         Namespace        = $NS
         query            = $query
         MessageData      = "The task $Name has changed"
@@ -76,7 +76,7 @@ Catch {
 
     $regParams | Out-String | Write-Verbose
 
-    if ($PSCmdlet.ShouldProcess($regParams.SourceIdentifier, "Register-CimIndicationEvent")) {
+    if ($PSCmdlet.ShouldProcess($regParams.SourceIdentifier, 'Register-CimIndicationEvent')) {
         Register-CimIndicationEvent @regParams
     }
 }

@@ -28,7 +28,7 @@ $LogPath = Join-Path -Path D:\backupLogs -ChildPath $log
 Start-Transcript -Path $LogPath
 
 #refresh NAS Credential
-cmdkey /add:DSTulipwood /user:Jeff /pass:(get-content C:\scripts\tulipwood.txt | Unprotect-CmsMessage)
+cmdkey /add:DSTulipwood /user:Jeff /pass:(Get-Content C:\scripts\tulipwood.txt | Unprotect-CmsMessage)
 
 $codeDir = "C:\scripts\PSBackup"
 
@@ -56,7 +56,6 @@ elseif ($PSCmdlet.ParameterSetName -eq 'single') {
 }
 
 $paths | ForEach-Object {
-
     if ($PSCmdlet.ShouldProcess($_)) {
         Try {
             #invoke a control script using my custom module
@@ -106,7 +105,7 @@ $paths | ForEach-Object {
 $params = @{
     Text    = "Backup Task Complete. View log at $LogPath"
     Header  = $(New-BTHeader -Id 1 -Title "Weekly Full Backup")
-    Applogo = "c:\scripts\db.png"
+    AppLogo = "c:\scripts\db.png"
 }
 
 Write-Host "[$(Get-Date)] Ending Weekly Full Backup" -ForegroundColor green

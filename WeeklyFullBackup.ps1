@@ -15,11 +15,23 @@ Param(
     [String]$Destination = "\\DSTulipwood\backup"
 )
 
+Write-Verbose "[$(Get-Date)] Starting $($MyInvocation.MyCommand)"
 $sets = C:\scripts\PSBackup\BuildList.ps1 -PathList $PathList -Destination $Destination
 
-foreach ($set in $sets) {
-    c:\scripts\PSBackup\Invoke-FullBackup.ps1 -path $set
+#it is posssible there will be no backup set
+if ($sets.count -gt 0) {
+    foreach ($set in $sets) {
+        Write-Verbose "[$(Get-Date)] Invoking backup for $set"
+        c:\scripts\PSBackup\Invoke-FullBackup.ps1 -path $set
+    }
 }
 
 # 8/4/2022 Copy Quickbook Backups to Box
-Get-ChildItem D:\OneDrive\Backup\*.qbb | Copy-Item -Destination 'C:\users\jeff\Box\Default Sync Folder\'
+if (Test-Path 'C:\users\jeff\Box\Default Sync Folder\') {
+    Get-ChildItem D:\OneDrive\Backup\*.qbb | Copy-Item -Destination 'C:\users\jeff\Box\Default Sync Folder\'
+}
+else {
+    Write-Warning "[$(Get-Date)] Can't verify Box folder."
+}
+
+Write-Verbose "[$(Get-Date)] Ending $($MyInvocation.MyCommand)"
