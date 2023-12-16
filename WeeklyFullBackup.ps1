@@ -15,10 +15,13 @@ Param(
     [String]$Destination = "\\DSTulipwood\backup"
 )
 
+$VerbosePreference = "Continue"
+
 Write-Verbose "[$(Get-Date)] Starting $($MyInvocation.MyCommand)"
+Write-Verbose "[$(Get-Date)] Creating Sets list"
 $sets = C:\scripts\PSBackup\BuildList.ps1 -PathList $PathList -Destination $Destination
 
-#it is posssible there will be no backup set
+#it is possible there will be no backup set
 if ($sets.count -gt 0) {
     foreach ($set in $sets) {
         Write-Verbose "[$(Get-Date)] Invoking backup for $set"
@@ -35,3 +38,5 @@ else {
 }
 
 Write-Verbose "[$(Get-Date)] Ending $($MyInvocation.MyCommand)"
+
+$VerbosePreference = "SilentlyContinue"

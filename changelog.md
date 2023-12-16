@@ -4,6 +4,10 @@
 
 - Revise as a PowerShell module
 
+## December 16, 2023
+
+- Added more Verbose output to `WeeklyFullBackup.ps1`
+
 ## December 9, 2023
 
 - Modified `WeeklyFullBackup` to test if there is a backup set.

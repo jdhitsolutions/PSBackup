@@ -37,6 +37,7 @@ foreach ($set in $sets) {
     Write-Verbose "Searching for $set path"
     #match on the first 4 characters of the set name
     $mtch = $set.substring(0,4)
+    Write-Verbose "Searching for path match on $mtch"
     $Path = (Get-Content C:\scripts\psbackup\myBackupPaths.txt | Select-String $mtch).line
     Write-Verbose "Backing up $Path"
     $Path
