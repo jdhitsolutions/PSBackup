@@ -28,14 +28,15 @@ if ($sets.count -gt 0) {
         c:\scripts\PSBackup\Invoke-FullBackup.ps1 -path $set
     }
 }
+#1/26/2024 Remove Box Sync Folder
 
-# 8/4/2022 Copy Quickbook Backups to Box
+<# # 8/4/2022 Copy Quickbook Backups to Box
 if (Test-Path 'C:\users\jeff\Box\Default Sync Folder\') {
     Get-ChildItem D:\OneDrive\Backup\*.qbb | Copy-Item -Destination 'C:\users\jeff\Box\Default Sync Folder\'
 }
 else {
     Write-Warning "[$(Get-Date)] Can't verify Box folder."
-}
+} #>
 
 Write-Verbose "[$(Get-Date)] Ending $($MyInvocation.MyCommand)"
 
