@@ -123,7 +123,9 @@ foreach ($path in $paths) {
 Write-Host "[$(Get-Date)] Removing temporary Backup folders" -fore yellow
 Get-ChildItem -Path D:\BackTemp -Directory | Remove-Item -Force -Recurse
 
-$NewFiles = Get-ChildItem -Path \\DSTulipwood\backup\*incremental.rar | Where-Object LastWriteTime -GE (Get-Date).Date
+$NewFiles = Get-ChildItem -Path \\DSTulipwood\backup\*incremental.rar |
+Where-Object LastWriteTime -GE (Get-Date).Date
+
 #send a toast notification
 $btText = @"
 Backup Task Complete

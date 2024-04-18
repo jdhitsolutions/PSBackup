@@ -87,4 +87,4 @@ Update-TypeData -TypeName "myBackupFile" -MemberType AliasProperty -memberName S
 Update-TypeData -TypeName "myBackupFile" -MemberType AliasProperty -memberName Created -Value CreationTime -force
 
 #load the custom format file
-Update-FormatData $PSScriptRoot\mybackupfile.format.ps1xml
+Update-FormatData $PSScriptRoot\formats\myBackupFile.format.ps1xml

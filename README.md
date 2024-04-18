@@ -2,6 +2,8 @@
 
 ![data](assets/db.png) This repository is a collection of PowerShell scripts and functions that I use to back up critical files and folders on my primary desktop. The code in this repository is **not** a PowerShell module that you can download and install. The scripts and functions are written to my specific requirements, but I have had requests to make the code more readily available. You are welcome to use anything in the repository as reference material for your projects. However, everything is offered **as-is** with **no guarantees** that any of the material will work for you.
 
+> **There are many hard-coded paths unique to my environment. This is normally not a best practice.**
+
 You can read more about the code in these blog posts.
 
 - [Creating a PowerShell Backup System](https://jdhitsolutions.com/blog/powershell/6905/creating-a-powershell-backup-system/)
@@ -12,4 +14,4 @@ You can read more about the code in these blog posts.
 
 This is a read-only repository, although I am updating it. See the `Changelog` file.
 
-If you have questions or comments, please reach out to me on Twitter using [@JeffHicks](https://twitter.com/jeffhicks).
+If you have questions or comments, please reach out to me on X using [@JeffHicks](https://twitter.com/jeffhicks).

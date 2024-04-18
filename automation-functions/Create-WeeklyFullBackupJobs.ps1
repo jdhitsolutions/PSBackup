@@ -17,4 +17,4 @@ $params = @{
 
 Register-ScheduledJob @params
 
-# Unregister-scheduledjob WeeklyFullBackup.
+# Unregister-ScheduledJob WeeklyFullBackup.

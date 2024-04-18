@@ -1,12 +1,12 @@
 #requires -version 5.1
 #requires -module PSScheduledJob
 
-#create filesystemwatcher job for my incremental backups.
+#create FileSystemWatcher job for my incremental backups.
 
 #scheduled job scriptblock
 $action = {
 
-  if (Test-Path c:\scripts\psbackup\myBackupPaths.txt) {
+  if (Test-Path c:\scripts\PSBackup\myBackupPaths.txt) {
     #filter out commented lines and lines with just white space
     $paths = Get-Content c:\scripts\PSBackup\myBackupPaths.txt | Where-Object {$_ -match "(^[^#]\S*)" -and $_ -notmatch "^\s+$"}
   }
@@ -33,16 +33,16 @@ $action = {
     $watcher.EnableRaisingEvents = $True
 
     #the Action scriptblock to be run when an event fires
-    $sbtext = "c:\scripts\PSBackup\LogBackupEntry.ps1 -event `$event -CSVPath $log"
+    $sbText = "c:\scripts\PSBackup\LogBackupEntry.ps1 -event `$event -CSVPath $log"
 
-    $sb = [scriptblock]::Create($sbtext)
+    $sb = [scriptblock]::Create($sbText)
 
     #register the event subscriber
 
     #possible events are Changed,Deleted,Created
     $params = @{
       InputObject      = $watcher
-      Eventname        = "changed"
+      EventName        = "changed"
       SourceIdentifier = "FileChange-$Name"
       MessageData      = "A file was created or changed in $Path"
       Action           = $sb

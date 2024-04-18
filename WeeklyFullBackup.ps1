@@ -15,6 +15,8 @@ Param(
     [String]$Destination = "\\DSTulipwood\backup"
 )
 
+#verify credential
+C:\scripts\Test-DSTulipwood.ps1
 $VerbosePreference = "Continue"
 
 Write-Verbose "[$(Get-Date)] Starting $($MyInvocation.MyCommand)"

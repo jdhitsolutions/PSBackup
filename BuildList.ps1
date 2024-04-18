@@ -1,11 +1,12 @@
 #build the full backup list
+#this script is intended to be used on my primary home desktop
 
 [CmdletBinding()]
 Param(
     [Parameter(Position = 0, HelpMessage = "Path to a text file with folders to backup.")]
     [ValidateNotNullOrEmpty()]
     [ValidateScript( { Test-Path $_ })]
-    [String]$PathList = "c:\scripts\PSBackup\mybackupPaths.txt",
+    [String]$PathList = "c:\scripts\PSBackup\myBackupPaths.txt",
 
     [Parameter(Position = 1, HelpMessage = "The destination folder for the backup files")]
     [ValidateNotNullOrEmpty()]

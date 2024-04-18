@@ -5,5 +5,5 @@ ForEach-Object {
     Update-FormatData -AppendPath $_.FullName
 } #>
 
-Update-FormatData $PSScriptRoot\mybackupfile.format.ps1xml
-Update-FormatData $PSScriptRoot\pending.format.ps1xml
+Update-FormatData $PSScriptRoot\formats\mybackupfile.format.ps1xml
+Update-FormatData $PSScriptRoot\formats\pending.format.ps1xml

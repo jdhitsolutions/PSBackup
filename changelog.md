@@ -1,8 +1,11 @@
 # PSBackup ChangeLog
 
-## TO-DO
+## April XX, 2024
 
-- Revise as a PowerShell module
+- Revised `LogBackupEntry.ps1` to better exclude files./aut
+- Updated `WeeklyFullBackup.ps1` to validate NAS credential.
+- Restructured folder layout for this project.
+
 ## February 2, 2024
 
 - Changed `Substack` references to `Behind`.

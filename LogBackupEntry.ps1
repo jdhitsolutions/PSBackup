@@ -21,35 +21,37 @@ if (Test-Path $ExclusionList) {
 }
 
 #log activity. Comment out the line to disable logging
-$logfile = "D:\temp\watcherlog.txt"
+$LogFile = "D:\temp\watcherlog.txt"
 
 #if log is enabled and it is over 10MB in size, archive the file and start a new file.
-$chkfile = Get-Item -Path $logfile -ErrorAction SilentlyContinue
-if ($chkFile.length -ge 10MB) {
-  $chkFile | Copy-Item -Destination d:\temp\archive-watcherlog.txt -Force
-  Remove-Item -Path $logfile
+$ChkFile = Get-Item -Path $LogFile -ErrorAction SilentlyContinue
+if ($ChkFile.length -ge 10MB) {
+  $ChkFile | Copy-Item -Destination d:\temp\archive-watcherlog.txt -Force
+  Remove-Item -Path $LogFile
 }
 
 #uncomment for debugging and testing
 # this will create a serialized version of each fired event
 # $event | Export-Clixml ([System.IO.Path]::GetTempFileName()).replace("tmp","xml")
 
-if ($logfile) { "$(Get-Date) LogBackupEntry fired" | Out-File -FilePath $logfile -Append }
-if ($logfile) { "$(Get-Date) Verifying path $($event.SourceEventArgs.fullpath)" | Out-File -FilePath $logfile -Append }
-if (Test-Path $event.SourceEventArgs.fullpath) {
-  $f = Get-Item -Path $event.SourceEventArgs.fullpath -Force
-  if ($logfile) { "$(Get-Date) Detected $($f.FullName)" | Out-File -FilePath $logfile -Append }
+if ($LogFile) { "$(Get-Date) LogBackupEntry fired" | Out-File -FilePath $LogFile -Append }
+if ($LogFile) { "$(Get-Date) Verifying path $($event.SourceEventArgs.FullPath)" | Out-File -FilePath $LogFile -Append }
+if (Test-Path $event.SourceEventArgs.FullPath) {
+  $f = Get-Item -Path $event.SourceEventArgs.FullPath -Force
+  if ($LogFile) { "$(Get-Date) Detected $($f.FullName)" | Out-File -FilePath $LogFile -Append }
 
   #test if the path is in the excluded list and skip the file
-  $test = @()
+  $test = $excludes | where  {$f -like "$($_)*"}
+<#   $test = @()
   foreach ($x in $excludes) {
     $test += $f.directory -like "$($x)*"
-  }
-  if ($test -notcontains $True) {
+  } #>
+  #if ($test -NotContains $True) {
+  if (-Not $test) {
     $OKBackup = $True
   }
   else {
-    if ($logfile) { "$(Get-Date) EXCLUDED ENTRY $($f.FullName)" | Out-File -FilePath $logfile -Append }
+    if ($LogFile) { "$(Get-Date) EXCLUDED ENTRY $($f.FullName) LIKE $Test" | Out-File -FilePath $LogFile -Append }
     $OKBackup = $false
   }
   if ($OKBackup) {
@@ -57,13 +59,13 @@ if (Test-Path $event.SourceEventArgs.fullpath) {
     If (Test-Path $CSVPath) {
       $in = (Import-Csv -Path $CSVPath).path | Get-Unique -AsString
       if ($in -contains $f.FullName) {
-        if ($logfile) { "$(Get-Date) DUPLICATE ENTRY $($f.FullName)" | Out-File -FilePath $logfile -Append }
+        if ($LogFile) { "$(Get-Date) DUPLICATE ENTRY $($f.FullName)" | Out-File -FilePath $LogFile -Append }
       }
     }
     #only save files and not a temp file
-    if (($in -notcontains $f.FullName) -AND (-Not $f.PSIsContainer) -AND ($f.basename -notmatch "(^(~|__rar).*)|(.*\.tmp$)")) {
+    if (($in -NotContains $f.FullName) -AND (-Not $f.PSIsContainer) -AND ($f.basename -notmatch "(^(~|__rar).*)|(.*\.tmp$)")) {
 
-      if ($logfile) { "$(Get-Date) Saving to $CSVPath" | Out-File -FilePath $logfile -Append }
+      if ($LogFile) { "$(Get-Date) Saving to $CSVPath" | Out-File -FilePath $LogFile -Append }
 
       #write the object to the CSV file
       [PSCustomObject]@{
@@ -80,6 +82,6 @@ if (Test-Path $event.SourceEventArgs.fullpath) {
   } #if OKBackup
 } #if test-path
 
-if ($logfile) { "$(Get-Date) Ending LogBackupEntry.ps1" | Out-File -FilePath $logfile -Append }
+if ($LogFile) { "$(Get-Date) Ending LogBackupEntry.ps1" | Out-File -FilePath $LogFile -Append }
 
 #end of script
