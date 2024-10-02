@@ -12,6 +12,6 @@ You can read more about the code in these blog posts.
 - [Creating a PowerShell Backup System – Part 4](https://jdhitsolutions.com/blog/powershell/6962/creating-a-powershell-backup-system-part-4/)
 - [Managing My PowerShell Backup Files](https://jdhitsolutions.com/blog/powershell/7081/managing-my-powershell-backup-files/)
 
-This is a read-only repository, although I am updating it. See the `Changelog` file.
+This is a __read-only__ repository, although I am updating it. See the [`Changelog`](changelog.md) file.
 
 If you have questions or comments, please reach out to me on X using [@JeffHicks](https://twitter.com/jeffhicks).
