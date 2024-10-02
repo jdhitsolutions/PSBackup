@@ -24,12 +24,15 @@ run this as a scheduled job, there is no $PSScriptRoot or $MyInvocation
 #create a transcript log file
 $log = New-CustomFileName -Template "WeeklyFull_%year%month%day%hour%minute%seconds-%###.txt"
 #11/6/2023 Changed Backup log path so the files don't get removed on reboot
-$LogPath = Join-Path -Path D:\backupLogs -ChildPath $log
+#8/17/2024 moved backup logs to OneDrive
+$LogPath = Join-Path -Path $env:OneDrive\backuplogs -ChildPath $log
 Start-Transcript -Path $LogPath
 
 #refresh NAS Credential
-cmdkey /add:DSTulipwood /user:Jeff /pass:(Get-Content C:\scripts\tulipwood.txt | Unprotect-CmsMessage)
-
+if ($Destination -match "DSTulipwood") {
+    Write-Host "[$(Get-Date)] Refreshing Tulipwood Credential" -ForegroundColor yellow
+    cmdkey /add:DSTulipwood /user:Jeff /pass:(Get-Content C:\scripts\tulipwood.txt | Unprotect-CmsMessage)
+}
 $codeDir = "C:\scripts\PSBackup"
 
 Write-Host "[$(Get-Date)] Starting Weekly Full Backup" -ForegroundColor green

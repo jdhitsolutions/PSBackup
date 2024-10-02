@@ -1,8 +1,18 @@
 # PSBackup ChangeLog
 
-## April XX, 2024
+## October 2, 2024
 
-- Revised `LogBackupEntry.ps1` to better exclude files./aut
+- Modified files to use `$ENV:OneDrive` in place of the hard-coded path.
+- Modified weekly backup to pass the destination path as a parameter to `Invoke-FullBackup.ps1`.
+- Moved primary branch from `master` to `main`.
+
+## August 3, 2024
+
+- Updated `BuildList.ps1` to fix a bug in building the list when there are no incremental backups.
+
+## April 15, 2024
+
+- Revised `LogBackupEntry.ps1` to better exclude files.
 - Updated `WeeklyFullBackup.ps1` to validate NAS credential.
 - Restructured folder layout for this project.
 

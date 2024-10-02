@@ -16,11 +16,17 @@ Param(
 #regex to match on set name from RAR file
 [regex]$rx = "(?<=_)\w+(?=\-)"
 
-$sets = Get-ChildItem $Destination\*incremental.rar |
+#8/3/2024 Explicitly set this to an array of strings otherwise names are appended to a single string
+[string[]]$sets = Get-ChildItem $Destination\*incremental.rar |
 Select-Object -Property @{Name = "Set"; Expression = { $rx.Match($_.name).Value } } |
 Select-Object -expand Set | Select-Object -Unique
 
-Write-Verbose "Found incremental backups for $($sets -join ',') "
+If ($Sets.Count -eq 0) {
+    Write-Verbose "No incremental backups found"
+}
+else {
+    Write-Verbose "Found incremental backups for $($sets -join ',') "
+}
 #get set name from pending log that may not have been backed up yet
 
 Write-Verbose "Checking pending backups"
@@ -39,7 +45,7 @@ foreach ($set in $sets) {
     #match on the first 4 characters of the set name
     $mtch = $set.substring(0,4)
     Write-Verbose "Searching for path match on $mtch"
-    $Path = (Get-Content C:\scripts\psbackup\myBackupPaths.txt | Select-String $mtch).line
+    $Path = (Get-Content C:\scripts\PSBackup\myBackupPaths.txt | Select-String $mtch).line
     Write-Verbose "Backing up $Path"
     $Path
 }

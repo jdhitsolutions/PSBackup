@@ -27,7 +27,8 @@ $sets = C:\scripts\PSBackup\BuildList.ps1 -PathList $PathList -Destination $Dest
 if ($sets.count -gt 0) {
     foreach ($set in $sets) {
         Write-Verbose "[$(Get-Date)] Invoking backup for $set"
-        c:\scripts\PSBackup\Invoke-FullBackup.ps1 -path $set
+        #8/17/2024 Pass the destination to the backup script
+        c:\scripts\PSBackup\Invoke-FullBackup.ps1 -path $set -Destination $Destination
     }
 }
 #1/26/2024 Remove Box Sync Folder

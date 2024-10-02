@@ -7,11 +7,13 @@ C:\users\jeff\documents
 C:\Users\Jeff\Google Drive
 C:\users\jeff\dropbox
 C:\Scripts
-C:\Presentations
-C:\Training
+C:\Users\Jeff\Documents\MuseScore4\Scores
 D:\OneDrive\PSProfiles
 D:\OneDrive\Behind
 D:\jdhit
-D:\OneDrive\Scores4
+D:\OneDrive\PSBehind
+
+#C:\Training
+#C:\Presentations
 #D:\ToolmakingBook
 #D:\PowerShellPracticePrimer

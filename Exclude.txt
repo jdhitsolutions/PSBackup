@@ -11,3 +11,4 @@ C:\Users\Jeff\Documents\MuseScore3\SoundFonts\*
 C:\Users\Jeff\Documents\MuseScore4\SoundFonts\*
 C:\Users\Jeff\Google Drive\junk\*
 C:\users\jeff\documents\Outlook Files\*
+D:\OneDrive\Scores4\*.mscz~
