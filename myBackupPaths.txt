@@ -12,8 +12,9 @@ D:\OneDrive\PSProfiles
 D:\OneDrive\Behind
 D:\jdhit
 D:\OneDrive\PSBehind
+D:\OneDrive\bsky
+C:\Presentations
 
 #C:\Training
-#C:\Presentations
 #D:\ToolmakingBook
 #D:\PowerShellPracticePrimer
