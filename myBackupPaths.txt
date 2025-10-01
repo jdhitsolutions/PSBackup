@@ -14,7 +14,6 @@ D:\jdhit
 D:\OneDrive\PSBehind
 D:\OneDrive\bsky
 C:\Presentations
-
-#C:\Training
-#D:\ToolmakingBook
+C:\Training
+D:\ToolmakingBook
 #D:\PowerShellPracticePrimer

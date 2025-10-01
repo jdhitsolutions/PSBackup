@@ -1,5 +1,11 @@
 # PSBackup ChangeLog
 
+## October 1, 2025
+
+- minor changes to DailyWatcher automation script.
+- Updates to backup paths list.
+- Updated `README.md`
+
 ## October 2, 2024
 
 - Modified files to use `$ENV:OneDrive` in place of the hard-coded path.

@@ -8,7 +8,8 @@ $action = {
 
   if (Test-Path c:\scripts\PSBackup\myBackupPaths.txt) {
     #filter out commented lines and lines with just white space
-    $paths = Get-Content c:\scripts\PSBackup\myBackupPaths.txt | Where-Object {$_ -match "(^[^#]\S*)" -and $_ -notmatch "^\s+$"}
+    $paths = Get-Content c:\scripts\PSBackup\myBackupPaths.txt |
+    Where-Object {$_ -match "(^[^#]\S*)" -and $_ -notmatch "^\s+$"}
   }
   else {
     Throw "Failed to find c:\scripts\PSBackup\myBackupPaths.txt"
@@ -64,8 +65,8 @@ $action = {
 } #close job action
 
 $trigger = New-JobTrigger -AtStartup
-
-Register-ScheduledJob -Name "DailyWatcher" -ScriptBlock $action -Trigger $trigger
+$cred = Get-Credential Jeff
+Register-ScheduledJob -Name "DailyWatcher" -ScriptBlock $action -Trigger $trigger -RunNow -MaxResultCount 5 -credential $cred
 
 # manually start the task in Task Scheduler
 
