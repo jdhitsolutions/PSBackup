@@ -1,5 +1,10 @@
 # PSBackup ChangeLog
 
+## October 6, 2025
+
+- Reformatted LogBackupEntry.ps1
+- Added Obsidian backup path
+
 ## October 1, 2025
 
 - minor changes to DailyWatcher automation script.
